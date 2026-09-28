@@ -1,0 +1,1642 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Nexora — Task Queue</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+        .tasks-page {
+            min-height: 100vh;
+            max-width: 1600px;
+            margin: auto;
+            padding: 32px;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .eyebrow {
+            color: var(--purple-light);
+            font-size: 12px;
+            font-weight: 800;
+            letter-spacing: .08em;
+            margin-bottom: 8px;
+        }
+
+        .page-header h1 {
+            margin: 0 0 8px;
+            font-size: 32px;
+        }
+
+        .page-header p {
+            margin: 0;
+            color: var(--muted);
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            border: 1px solid var(--border);
+            background: var(--surface);
+            color: var(--text);
+            padding: 11px 17px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 700;
+            transition: .2s;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            border-color: var(--purple);
+        }
+
+        .btn-primary {
+            background: linear-gradient(
+                135deg,
+                var(--purple),
+                #5d43db
+            );
+            border-color: transparent;
+        }
+
+        /* STATS */
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .stat-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            padding: 20px;
+        }
+
+        .stat-label {
+            color: var(--muted);
+            font-size: 12px;
+            display: block;
+            margin-bottom: 12px;
+        }
+
+        .stat-value {
+            font-size: 27px;
+            font-weight: 800;
+        }
+
+        .stat-icon {
+            float: right;
+            width: 38px;
+            height: 38px;
+            border-radius: 11px;
+            display: grid;
+            place-items: center;
+            background: rgba(139,108,255,.12);
+        }
+
+        .stat-description {
+            margin-top: 8px;
+            color: var(--muted);
+            font-size: 11px;
+        }
+
+        /* TOOLBAR */
+
+        .toolbar {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            padding: 16px;
+            border-radius: 18px;
+            margin-bottom: 22px;
+        }
+
+        .search {
+            flex: 1;
+            min-width: 240px;
+            position: relative;
+        }
+
+        .search span {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--muted);
+        }
+
+        .search input,
+        .filter {
+            box-sizing: border-box;
+            width: 100%;
+            padding: 12px 14px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            background: var(--surface-2);
+            color: var(--text);
+            outline: none;
+        }
+
+        .search input {
+            padding-left: 40px;
+        }
+
+        .filter {
+            width: auto;
+            min-width: 150px;
+        }
+
+        /* TABLE */
+
+        .table-container {
+            overflow-x: auto;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+        }
+
+        table {
+            width: 100%;
+            min-width: 1000px;
+            border-collapse: collapse;
+        }
+
+        th {
+            text-align: left;
+            padding: 17px 18px;
+            color: var(--muted);
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: .04em;
+            border-bottom: 1px solid var(--border);
+            background: rgba(255,255,255,.015);
+        }
+
+        td {
+            padding: 18px;
+            border-bottom: 1px solid var(--border);
+            font-size: 13px;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tbody tr {
+            transition: .2s;
+        }
+
+        tbody tr:hover {
+            background: rgba(139,108,255,.035);
+        }
+
+        .task-name {
+            font-weight: 800;
+            margin-bottom: 5px;
+        }
+
+        .task-id {
+            color: var(--muted);
+            font-size: 10px;
+        }
+
+        .agent-name {
+            color: var(--purple-light);
+            font-weight: 700;
+            font-size: 12px;
+        }
+
+        .task-time {
+            color: var(--muted);
+            font-size: 11px;
+        }
+
+        /* STATUS */
+
+        .status {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            padding: 6px 10px;
+            border-radius: 30px;
+            font-size: 10px;
+            font-weight: 800;
+        }
+
+        .dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+        }
+
+        .running {
+            color: var(--blue);
+            background: rgba(66,200,255,.10);
+        }
+
+        .running .dot {
+            background: var(--blue);
+            animation: pulse 1.3s infinite;
+        }
+
+        .pending {
+            color: var(--orange);
+            background: rgba(255,182,95,.10);
+        }
+
+        .pending .dot {
+            background: var(--orange);
+        }
+
+        .completed {
+            color: var(--green);
+            background: rgba(67,223,160,.10);
+        }
+
+        .completed .dot {
+            background: var(--green);
+        }
+
+        .failed {
+            color: var(--red);
+            background: rgba(255,102,120,.10);
+        }
+
+        .failed .dot {
+            background: var(--red);
+        }
+
+        @keyframes pulse {
+            50% {
+                opacity: .35;
+                transform: scale(.65);
+            }
+        }
+
+        /* PROGRESS */
+
+        .progress-wrap {
+            width: 120px;
+        }
+
+        .progress-bar {
+            height: 5px;
+            background: rgba(255,255,255,.08);
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 5px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            border-radius: inherit;
+            background: linear-gradient(
+                90deg,
+                var(--purple),
+                var(--blue)
+            );
+        }
+
+        .progress-text {
+            font-size: 10px;
+            color: var(--muted);
+        }
+
+        /* ACTIONS */
+
+        .actions {
+            display: flex;
+            gap: 6px;
+        }
+
+        .action-btn {
+            border: 1px solid var(--border);
+            background: var(--surface-2);
+            color: var(--text);
+            padding: 7px 9px;
+            border-radius: 7px;
+            cursor: pointer;
+            font-size: 11px;
+        }
+
+        .action-btn:hover {
+            border-color: var(--purple);
+        }
+
+        .action-danger {
+            color: var(--red);
+        }
+
+        .action-success {
+            color: var(--green);
+        }
+
+        /* EMPTY */
+
+        .empty {
+            display: none;
+            padding: 60px 20px;
+            text-align: center;
+            color: var(--muted);
+        }
+
+        .empty-icon {
+            font-size: 40px;
+            margin-bottom: 10px;
+        }
+
+        /* MOBILE */
+
+        @media (max-width: 1100px) {
+            .stats-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 750px) {
+            .tasks-page {
+                padding: 20px 14px;
+            }
+
+            .page-header {
+                flex-direction: column;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .filter {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="tasks-page">
+
+    <!-- HEADER -->
+
+    <header class="page-header">
+
+        <div>
+            <div class="eyebrow">
+                AGENT OPERATIONS
+            </div>
+
+            <h1>Task Queue</h1>
+
+            <p>
+                Monitor, manage and control tasks executed by your AI agents.
+            </p>
+        </div>
+
+        <div class="header-actions">
+
+            <button class="btn" onclick="refreshTasks()">
+                ↻ Refresh
+            </button>
+
+            <button
+                class="btn btn-primary"
+                onclick="createTask()"
+            >
+                + Create Task
+            </button>
+
+        </div>
+
+    </header>
+
+
+    <!-- STATISTICS -->
+
+    <section class="stats-grid">
+
+        <div class="stat-card">
+
+            <div class="stat-icon">⚡</div>
+
+            <span class="stat-label">
+                RUNNING
+            </span>
+
+            <div
+                class="stat-value"
+                id="runningCount"
+            >
+                2
+            </div>
+
+            <div class="stat-description">
+                Currently executing
+            </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <div class="stat-icon">◷</div>
+
+            <span class="stat-label">
+                PENDING
+            </span>
+
+            <div
+                class="stat-value"
+                id="pendingCount"
+            >
+                3
+            </div>
+
+            <div class="stat-description">
+                Waiting in queue
+            </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <div class="stat-icon">✓</div>
+
+            <span class="stat-label">
+                COMPLETED
+            </span>
+
+            <div
+                class="stat-value"
+                id="completedCount"
+            >
+                24
+            </div>
+
+            <div class="stat-description">
+                Successfully completed
+            </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <div class="stat-icon">!</div>
+
+            <span class="stat-label">
+                FAILED
+            </span>
+
+            <div
+                class="stat-value"
+                id="failedCount"
+            >
+                2
+            </div>
+
+            <div class="stat-description">
+                Requires attention
+            </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <div class="stat-icon">⏱</div>
+
+            <span class="stat-label">
+                AVG TIME
+            </span>
+
+            <div class="stat-value">
+                3.8s
+            </div>
+
+            <div class="stat-description">
+                Average execution time
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- FILTER TOOLBAR -->
+
+    <section class="toolbar">
+
+        <div class="search">
+
+            <span>⌕</span>
+
+            <input
+                type="text"
+                id="taskSearch"
+                placeholder="Search tasks, IDs or agents..."
+                oninput="filterTasks()"
+            >
+
+        </div>
+
+
+        <select
+            class="filter"
+            id="statusFilter"
+            onchange="filterTasks()"
+        >
+            <option value="all">All Status</option>
+            <option value="running">Running</option>
+            <option value="pending">Pending</option>
+            <option value="completed">Completed</option>
+            <option value="failed">Failed</option>
+        </select>
+
+
+        <select
+            class="filter"
+            id="agentFilter"
+            onchange="filterTasks()"
+        >
+            <option value="all">All Agents</option>
+            <option value="Research Agent">Research Agent</option>
+            <option value="Support Copilot">Support Copilot</option>
+            <option value="Data Analyst">Data Analyst</option>
+            <option value="Workflow Executor">Workflow Executor</option>
+        </select>
+
+
+        <select
+            class="filter"
+            id="priorityFilter"
+            onchange="filterTasks()"
+        >
+            <option value="all">All Priority</option>
+            <option value="high">High</option>
+            <option value="medium">Medium</option>
+            <option value="low">Low</option>
+        </select>
+
+    </section>
+
+
+    <!-- TASK TABLE -->
+
+    <section class="table-container">
+
+        <table>
+
+            <thead>
+
+                <tr>
+
+                    <th>TASK</th>
+
+                    <th>AGENT</th>
+
+                    <th>STATUS</th>
+
+                    <th>PROGRESS</th>
+
+                    <th>PRIORITY</th>
+
+                    <th>CREATED</th>
+
+                    <th>ACTIONS</th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody id="taskTable">
+
+
+                <!-- TASK 1 -->
+
+                <tr
+                    class="task-row"
+                    data-search="market research task-1048 research agent"
+                    data-status="running"
+                    data-agent="Research Agent"
+                    data-priority="high"
+                >
+
+                    <td>
+
+                        <div class="task-name">
+                            Market Research Analysis
+                        </div>
+
+                        <div class="task-id">
+                            TASK-1048
+                        </div>
+
+                    </td>
+
+
+                    <td>
+
+                        <span class="agent-name">
+                            Research Agent
+                        </span>
+
+                    </td>
+
+
+                    <td>
+
+                        <span class="status running">
+                            <span class="dot"></span>
+                            Running
+                        </span>
+
+                    </td>
+
+
+                    <td>
+
+                        <div class="progress-wrap">
+
+                            <div class="progress-bar">
+
+                                <div
+                                    class="progress-fill"
+                                    style="width:72%"
+                                ></div>
+
+                            </div>
+
+                            <span class="progress-text">
+                                72%
+                            </span>
+
+                        </div>
+
+                    </td>
+
+
+                    <td>
+                        <strong style="color:var(--red)">
+                            High
+                        </strong>
+                    </td>
+
+
+                    <td>
+
+                        <span class="task-time">
+                            2 min ago
+                        </span>
+
+                    </td>
+
+
+                    <td>
+
+                        <div class="actions">
+
+                            <button
+                                class="action-btn"
+                                onclick="viewTask('TASK-1048')"
+                            >
+                                View
+                            </button>
+
+                            <button
+                                class="action-btn action-danger"
+                                onclick="cancelTask('TASK-1048')"
+                            >
+                                Cancel
+                            </button>
+
+                        </div>
+
+                    </td>
+
+                </tr>
+
+
+                <!-- TASK 2 -->
+
+                <tr
+                    class="task-row"
+                    data-search="customer response task-1047 support copilot"
+                    data-status="running"
+                    data-agent="Support Copilot"
+                    data-priority="medium"
+                >
+
+                    <td>
+
+                        <div class="task-name">
+                            Customer Response Draft
+                        </div>
+
+                        <div class="task-id">
+                            TASK-1047
+                        </div>
+
+                    </td>
+
+                    <td>
+                        <span class="agent-name">
+                            Support Copilot
+                        </span>
+                    </td>
+
+                    <td>
+
+                        <span class="status running">
+                            <span class="dot"></span>
+                            Running
+                        </span>
+
+                    </td>
+
+                    <td>
+
+                        <div class="progress-wrap">
+
+                            <div class="progress-bar">
+
+                                <div
+                                    class="progress-fill"
+                                    style="width:46%"
+                                ></div>
+
+                            </div>
+
+                            <span class="progress-text">
+                                46%
+                            </span>
+
+                        </div>
+
+                    </td>
+
+                    <td>
+                        <strong style="color:var(--orange)">
+                            Medium
+                        </strong>
+                    </td>
+
+                    <td>
+                        <span class="task-time">
+                            4 min ago
+                        </span>
+                    </td>
+
+                    <td>
+
+                        <div class="actions">
+
+                            <button
+                                class="action-btn"
+                                onclick="viewTask('TASK-1047')"
+                            >
+                                View
+                            </button>
+
+                            <button
+                                class="action-btn action-danger"
+                                onclick="cancelTask('TASK-1047')"
+                            >
+                                Cancel
+                            </button>
+
+                        </div>
+
+                    </td>
+
+                </tr>
+
+
+                <!-- TASK 3 -->
+
+                <tr
+                    class="task-row"
+                    data-search="sales report task-1046 data analyst"
+                    data-status="pending"
+                    data-agent="Data Analyst"
+                    data-priority="high"
+                >
+
+                    <td>
+
+                        <div class="task-name">
+                            Weekly Sales Report
+                        </div>
+
+                        <div class="task-id">
+                            TASK-1046
+                        </div>
+
+                    </td>
+
+                    <td>
+                        <span class="agent-name">
+                            Data Analyst
+                        </span>
+                    </td>
+
+                    <td>
+
+                        <span class="status pending">
+                            <span class="dot"></span>
+                            Pending
+                        </span>
+
+                    </td>
+
+                    <td>
+
+                        <div class="progress-wrap">
+
+                            <div class="progress-bar">
+
+                                <div
+                                    class="progress-fill"
+                                    style="width:12%"
+                                ></div>
+
+                            </div>
+
+                            <span class="progress-text">
+                                Queued
+                            </span>
+
+                        </div>
+
+                    </td>
+
+                    <td>
+                        <strong style="color:var(--red)">
+                            High
+                        </strong>
+                    </td>
+
+                    <td>
+                        <span class="task-time">
+                            7 min ago
+                        </span>
+                    </td>
+
+                    <td>
+
+                        <div class="actions">
+
+                            <button
+                                class="action-btn"
+                                onclick="viewTask('TASK-1046')"
+                            >
+                                View
+                            </button>
+
+                            <button
+                                class="action-btn action-danger"
+                                onclick="cancelTask('TASK-1046')"
+                            >
+                                Cancel
+                            </button>
+
+                        </div>
+
+                    </td>
+
+                </tr>
+
+
+                <!-- TASK 4 -->
+
+                <tr
+                    class="task-row"
+                    data-search="email automation task-1045 workflow executor"
+                    data-status="pending"
+                    data-agent="Workflow Executor"
+                    data-priority="medium"
+                >
+
+                    <td>
+
+                        <div class="task-name">
+                            Email Automation
+                        </div>
+
+                        <div class="task-id">
+                            TASK-1045
+                        </div>
+
+                    </td>
+
+                    <td>
+                        <span class="agent-name">
+                            Workflow Executor
+                        </span>
+                    </td>
+
+                    <td>
+
+                        <span class="status pending">
+                            <span class="dot"></span>
+                            Pending
+                        </span>
+
+                    </td>
+
+                    <td>
+
+                        <div class="progress-wrap">
+
+                            <div class="progress-bar">
+
+                                <div
+                                    class="progress-fill"
+                                    style="width:0%"
+                                ></div>
+
+                            </div>
+
+                            <span class="progress-text">
+                                Queued
+                            </span>
+
+                        </div>
+
+                    </td>
+
+                    <td>
+                        <strong style="color:var(--orange)">
+                            Medium
+                        </strong>
+                    </td>
+
+                    <td>
+                        <span class="task-time">
+                            11 min ago
+                        </span>
+                    </td>
+
+                    <td>
+
+                        <div class="actions">
+
+                            <button
+                                class="action-btn"
+                                onclick="viewTask('TASK-1045')"
+                            >
+                                View
+                            </button>
+
+                            <button
+                                class="action-btn action-danger"
+                                onclick="cancelTask('TASK-1045')"
+                            >
+                                Cancel
+                            </button>
+
+                        </div>
+
+                    </td>
+
+                </tr>
+
+
+                <!-- TASK 5 -->
+
+                <tr
+                    class="task-row"
+                    data-search="document summary task-1044 research agent"
+                    data-status="completed"
+                    data-agent="Research Agent"
+                    data-priority="low"
+                >
+
+                    <td>
+
+                        <div class="task-name">
+                            Document Summary
+                        </div>
+
+                        <div class="task-id">
+                            TASK-1044
+                        </div>
+
+                    </td>
+
+                    <td>
+                        <span class="agent-name">
+                            Research Agent
+                        </span>
+                    </td>
+
+                    <td>
+
+                        <span class="status completed">
+                            <span class="dot"></span>
+                            Completed
+                        </span>
+
+                    </td>
+
+                    <td>
+
+                        <div class="progress-wrap">
+
+                            <div class="progress-bar">
+
+                                <div
+                                    class="progress-fill"
+                                    style="width:100%"
+                                ></div>
+
+                            </div>
+
+                            <span class="progress-text">
+                                100%
+                            </span>
+
+                        </div>
+
+                    </td>
+
+                    <td>
+                        <strong style="color:var(--muted)">
+                            Low
+                        </strong>
+                    </td>
+
+                    <td>
+                        <span class="task-time">
+                            18 min ago
+                        </span>
+                    </td>
+
+                    <td>
+
+                        <div class="actions">
+
+                            <button
+                                class="action-btn"
+                                onclick="viewTask('TASK-1044')"
+                            >
+                                View
+                            </button>
+
+                            <button
+                                class="action-btn action-success"
+                                onclick="rerunTask('TASK-1044')"
+                            >
+                                ↻ Run
+                            </button>
+
+                        </div>
+
+                    </td>
+
+                </tr>
+
+
+                <!-- TASK 6 -->
+
+                <tr
+                    class="task-row"
+                    data-search="customer analysis task-1043 data analyst"
+                    data-status="completed"
+                    data-agent="Data Analyst"
+                    data-priority="medium"
+                >
+
+                    <td>
+
+                        <div class="task-name">
+                            Customer Analysis
+                        </div>
+
+                        <div class="task-id">
+                            TASK-1043
+                        </div>
+
+                    </td>
+
+                    <td>
+                        <span class="agent-name">
+                            Data Analyst
+                        </span>
+                    </td>
+
+                    <td>
+
+                        <span class="status completed">
+                            <span class="dot"></span>
+                            Completed
+                        </span>
+
+                    </td>
+
+                    <td>
+
+                        <div class="progress-wrap">
+
+                            <div class="progress-bar">
+
+                                <div
+                                    class="progress-fill"
+                                    style="width:100%"
+                                ></div>
+
+                            </div>
+
+                            <span class="progress-text">
+                                100%
+                            </span>
+
+                        </div>
+
+                    </td>
+
+                    <td>
+                        <strong style="color:var(--orange)">
+                            Medium
+                        </strong>
+                    </td>
+
+                    <td>
+                        <span class="task-time">
+                            24 min ago
+                        </span>
+                    </td>
+
+                    <td>
+
+                        <div class="actions">
+
+                            <button
+                                class="action-btn"
+                                onclick="viewTask('TASK-1043')"
+                            >
+                                View
+                            </button>
+
+                            <button
+                                class="action-btn action-success"
+                                onclick="rerunTask('TASK-1043')"
+                            >
+                                ↻ Run
+                            </button>
+
+                        </div>
+
+                    </td>
+
+                </tr>
+
+
+                <!-- TASK 7 -->
+
+                <tr
+                    class="task-row"
+                    data-search="invoice processing task-1042 invoice processor"
+                    data-status="failed"
+                    data-agent="Workflow Executor"
+                    data-priority="high"
+                >
+
+                    <td>
+
+                        <div class="task-name">
+                            Invoice Processing
+                        </div>
+
+                        <div class="task-id">
+                            TASK-1042
+                        </div>
+
+                    </td>
+
+                    <td>
+                        <span class="agent-name">
+                            Workflow Executor
+                        </span>
+                    </td>
+
+                    <td>
+
+                        <span class="status failed">
+                            <span class="dot"></span>
+                            Failed
+                        </span>
+
+                    </td>
+
+                    <td>
+
+                        <div class="progress-wrap">
+
+                            <div class="progress-bar">
+
+                                <div
+                                    class="progress-fill"
+                                    style="width:64%"
+                                ></div>
+
+                            </div>
+
+                            <span class="progress-text">
+                                Error
+                            </span>
+
+                        </div>
+
+                    </td>
+
+                    <td>
+                        <strong style="color:var(--red)">
+                            High
+                        </strong>
+                    </td>
+
+                    <td>
+                        <span class="task-time">
+                            31 min ago
+                        </span>
+                    </td>
+
+                    <td>
+
+                        <div class="actions">
+
+                            <button
+                                class="action-btn"
+                                onclick="viewTask('TASK-1042')"
+                            >
+                                View
+                            </button>
+
+                            <button
+                                class="action-btn action-success"
+                                onclick="retryTask('TASK-1042')"
+                            >
+                                ↻ Retry
+                            </button>
+
+                        </div>
+
+                    </td>
+
+                </tr>
+
+
+                <!-- TASK 8 -->
+
+                <tr
+                    class="task-row"
+                    data-search="competitor research task-1041 research agent"
+                    data-status="pending"
+                    data-agent="Research Agent"
+                    data-priority="low"
+                >
+
+                    <td>
+
+                        <div class="task-name">
+                            Competitor Research
+                        </div>
+
+                        <div class="task-id">
+                            TASK-1041
+                        </div>
+
+                    </td>
+
+                    <td>
+                        <span class="agent-name">
+                            Research Agent
+                        </span>
+                    </td>
+
+                    <td>
+
+                        <span class="status pending">
+                            <span class="dot"></span>
+                            Pending
+                        </span>
+
+                    </td>
+
+                    <td>
+
+                        <div class="progress-wrap">
+
+                            <div class="progress-bar">
+
+                                <div
+                                    class="progress-fill"
+                                    style="width:0%"
+                                ></div>
+
+                            </div>
+
+                            <span class="progress-text">
+                                Queued
+                            </span>
+
+                        </div>
+
+                    </td>
+
+                    <td>
+                        <strong style="color:var(--muted)">
+                            Low
+                        </strong>
+                    </td>
+
+                    <td>
+                        <span class="task-time">
+                            42 min ago
+                        </span>
+                    </td>
+
+                    <td>
+
+                        <div class="actions">
+
+                            <button
+                                class="action-btn"
+                                onclick="viewTask('TASK-1041')"
+                            >
+                                View
+                            </button>
+
+                            <button
+                                class="action-btn action-danger"
+                                onclick="cancelTask('TASK-1041')"
+                            >
+                                Cancel
+                            </button>
+
+                        </div>
+
+                    </td>
+
+                </tr>
+
+            </tbody>
+
+        </table>
+
+
+        <div
+            class="empty"
+            id="emptyState"
+        >
+            <div class="empty-icon">🔍</div>
+
+            <strong>No tasks found</strong>
+
+            <p>
+                Try changing your search or filters.
+            </p>
+        </div>
+
+    </section>
+
+</div>
+
+
+<script src="js/script.js"></script>
+
+
+<script>
+
+    function toast(message) {
+
+        if (typeof nexoraToast === "function") {
+            nexoraToast(message);
+        } else {
+            alert(message);
+        }
+
+    }
+
+
+    function filterTasks() {
+
+        const search =
+            document
+                .getElementById("taskSearch")
+                .value
+                .toLowerCase();
+
+        const status =
+            document.getElementById("statusFilter").value;
+
+        const agent =
+            document.getElementById("agentFilter").value;
+
+        const priority =
+            document.getElementById("priorityFilter").value;
+
+        const rows =
+            document.querySelectorAll(".task-row");
+
+        let visible = 0;
+
+        rows.forEach(row => {
+
+            const rowSearch =
+                row.dataset.search.toLowerCase();
+
+            const rowStatus =
+                row.dataset.status;
+
+            const rowAgent =
+                row.dataset.agent;
+
+            const rowPriority =
+                row.dataset.priority;
+
+            const searchMatch =
+                rowSearch.includes(search);
+
+            const statusMatch =
+                status === "all" ||
+                rowStatus === status;
+
+            const agentMatch =
+                agent === "all" ||
+                rowAgent === agent;
+
+            const priorityMatch =
+                priority === "all" ||
+                rowPriority === priority;
+
+            const show =
+                searchMatch &&
+                statusMatch &&
+                agentMatch &&
+                priorityMatch;
+
+            row.style.display =
+                show ? "" : "none";
+
+            if (show) {
+                visible++;
+            }
+
+        });
+
+        document.getElementById("emptyState").style.display =
+            visible === 0 ? "block" : "none";
+
+    }
+
+
+    function viewTask(id) {
+
+        localStorage.setItem(
+            "selectedTask",
+            id
+        );
+
+        toast("Opening " + id);
+
+    }
+
+
+    function cancelTask(id) {
+
+        const confirmed =
+            confirm(
+                "Cancel task " + id + "?"
+            );
+
+        if (!confirmed) {
+            return;
+        }
+
+        toast(
+            "Task " + id + " has been cancelled"
+        );
+
+    }
+
+
+    function retryTask(id) {
+
+        toast(
+            "↻ Retrying " + id + "..."
+        );
+
+        setTimeout(() => {
+
+            toast(
+                "✓ " + id + " retry started"
+            );
+
+        }, 700);
+
+    }
+
+
+    function rerunTask(id) {
+
+        toast(
+            "▶ " + id + " added to the queue"
+        );
+
+    }
+
+
+    function createTask() {
+
+        toast(
+            "Create Task panel opened"
+        );
+
+    }
+
+
+    function refreshTasks() {
+
+        toast(
+            "↻ Task queue refreshed"
+        );
+
+        document
+            .querySelectorAll(".task-row")
+            .forEach(row => {
+
+                row.style.transform =
+                    "scale(.99)";
+
+                setTimeout(() => {
+
+                    row.style.transform = "";
+
+                }, 150);
+
+            });
+
+    }
+
+
+    // Keyboard shortcut
+
+    document.addEventListener(
+        "keydown",
+        event => {
+
+            if (
+                event.ctrlKey &&
+                event.key.toLowerCase() === "k"
+            ) {
+
+                event.preventDefault();
+
+                document
+                    .getElementById("taskSearch")
+                    .focus();
+
+            }
+
+        }
+    );
+
+
+    // Initial filtering
+
+    filterTasks();
+
+</script>
+
+</body>
+</html>

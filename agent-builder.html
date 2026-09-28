@@ -1,0 +1,1941 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Agent Builder | Nexora</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background: #070911;
+            color: #f5f7ff;
+            font-family: "DM Sans", Arial, sans-serif;
+        }
+
+        .builder-page {
+            min-height: 100vh;
+        }
+
+        /* HEADER */
+
+        .builder-header {
+            height: 76px;
+            padding: 0 30px;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            border-bottom: 1px solid rgba(255,255,255,0.07);
+
+            background: rgba(7,9,17,0.92);
+
+            position: sticky;
+            top: 0;
+            z-index: 20;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+
+            color: white;
+            text-decoration: none;
+
+            font-size: 20px;
+            font-weight: 800;
+        }
+
+        .brand-icon {
+            width: 36px;
+            height: 36px;
+
+            display: grid;
+            place-items: center;
+
+            border-radius: 11px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #8b6cff,
+                    #42c8ff
+                );
+
+            font-weight: 900;
+        }
+
+        .header-divider {
+            width: 1px;
+            height: 28px;
+            background: rgba(255,255,255,0.1);
+        }
+
+        .page-title {
+            color: #9da6b8;
+            font-size: 13px;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        button {
+            font-family: inherit;
+        }
+
+        .header-button {
+            height: 39px;
+            padding: 0 15px;
+
+            border-radius: 9px;
+
+            border: 1px solid rgba(255,255,255,0.09);
+
+            background: #0e131f;
+            color: #cbd0dc;
+
+            cursor: pointer;
+
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .header-button:hover {
+            border-color: rgba(139,108,255,0.35);
+        }
+
+        .save-button {
+            background:
+                linear-gradient(
+                    100deg,
+                    #7657ed,
+                    #8b6cff
+                );
+
+            border: none;
+            color: white;
+
+            padding: 0 20px;
+        }
+
+        /* MAIN */
+
+        .builder-main {
+            display: grid;
+            grid-template-columns: 260px minmax(500px, 1fr) 310px;
+            min-height: calc(100vh - 76px);
+        }
+
+        /* LEFT PANEL */
+
+        .component-panel {
+            border-right: 1px solid rgba(255,255,255,0.07);
+            padding: 25px 18px;
+
+            background: #090c15;
+        }
+
+        .panel-label {
+            color: #737d91;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+
+            margin-bottom: 14px;
+        }
+
+        .component-search {
+            width: 100%;
+            height: 39px;
+
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 9px;
+
+            outline: none;
+
+            padding: 0 12px;
+
+            background: #0e131f;
+            color: white;
+
+            margin-bottom: 20px;
+        }
+
+        .component-search:focus {
+            border-color: rgba(139,108,255,0.55);
+        }
+
+        .component-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .component-item {
+            width: 100%;
+            min-height: 54px;
+
+            padding: 10px 12px;
+
+            display: flex;
+            align-items: center;
+            gap: 12px;
+
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 11px;
+
+            background: #0d121d;
+
+            cursor: pointer;
+
+            transition:
+                transform 0.2s ease,
+                border-color 0.2s ease,
+                background 0.2s ease;
+        }
+
+        .component-item:hover {
+            transform: translateX(3px);
+            border-color: rgba(139,108,255,0.3);
+            background: #111827;
+        }
+
+        .component-icon {
+            width: 33px;
+            height: 33px;
+
+            flex-shrink: 0;
+
+            display: grid;
+            place-items: center;
+
+            border-radius: 9px;
+
+            background: rgba(139,108,255,0.1);
+            color: #a99aff;
+
+            font-size: 14px;
+        }
+
+        .component-item strong {
+            display: block;
+            color: #e5e8f0;
+            font-size: 12px;
+        }
+
+        .component-item span {
+            display: block;
+            margin-top: 2px;
+            color: #606a7e;
+            font-size: 10px;
+        }
+
+        .tip-box {
+            margin-top: 25px;
+            padding: 14px;
+
+            border: 1px solid rgba(66,200,255,0.12);
+            border-radius: 12px;
+
+            background: rgba(66,200,255,0.04);
+        }
+
+        .tip-box strong {
+            display: block;
+            color: #8edcff;
+            font-size: 11px;
+            margin-bottom: 6px;
+        }
+
+        .tip-box p {
+            color: #687286;
+            font-size: 10px;
+            line-height: 1.6;
+        }
+
+        /* CANVAS */
+
+        .builder-canvas {
+            position: relative;
+
+            overflow: hidden;
+
+            background:
+                radial-gradient(
+                    circle at center,
+                    rgba(139,108,255,0.055),
+                    transparent 45%
+                ),
+                #080b13;
+        }
+
+        .canvas-grid {
+            position: absolute;
+            inset: 0;
+
+            opacity: 0.35;
+
+            background-image:
+                linear-gradient(
+                    rgba(255,255,255,0.035) 1px,
+                    transparent 1px
+                ),
+                linear-gradient(
+                    90deg,
+                    rgba(255,255,255,0.035) 1px,
+                    transparent 1px
+                );
+
+            background-size: 35px 35px;
+        }
+
+        .canvas-content {
+            position: relative;
+            z-index: 2;
+
+            padding: 45px;
+
+            min-height: 800px;
+        }
+
+        .canvas-heading {
+            margin-bottom: 38px;
+        }
+
+        .canvas-heading h1 {
+            font-size: 25px;
+            letter-spacing: -0.7px;
+            margin-bottom: 7px;
+        }
+
+        .canvas-heading p {
+            color: #70798c;
+            font-size: 12px;
+        }
+
+        /* FLOW */
+
+        .flow {
+            max-width: 570px;
+            margin: 0 auto;
+
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .flow-node {
+            width: 100%;
+            max-width: 500px;
+
+            padding: 17px;
+
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 14px;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    #111725,
+                    #0d121d
+                );
+
+            box-shadow:
+                0 20px 50px rgba(0,0,0,0.2);
+
+            transition:
+                transform 0.2s ease,
+                border-color 0.2s ease;
+        }
+
+        .flow-node:hover {
+            transform: translateY(-2px);
+            border-color: rgba(139,108,255,0.3);
+        }
+
+        .node-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+
+        .node-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .node-icon {
+            width: 35px;
+            height: 35px;
+
+            display: grid;
+            place-items: center;
+
+            border-radius: 10px;
+
+            background: rgba(139,108,255,0.12);
+            color: #b6a8ff;
+        }
+
+        .node-title strong {
+            font-size: 13px;
+        }
+
+        .node-title small {
+            display: block;
+            color: #657085;
+            font-size: 10px;
+            margin-top: 3px;
+        }
+
+        .node-menu {
+            border: none;
+            background: transparent;
+            color: #657085;
+            cursor: pointer;
+            font-size: 18px;
+        }
+
+        .node-body {
+            color: #737d90;
+            font-size: 11px;
+            line-height: 1.6;
+        }
+
+        .node-meta {
+            display: flex;
+            gap: 7px;
+            margin-top: 12px;
+            flex-wrap: wrap;
+        }
+
+        .node-tag {
+            padding: 5px 8px;
+
+            border-radius: 6px;
+
+            background: rgba(255,255,255,0.04);
+
+            color: #929caf;
+
+            font-size: 9px;
+        }
+
+        .flow-line {
+            width: 2px;
+            height: 46px;
+
+            background:
+                linear-gradient(
+                    to bottom,
+                    rgba(139,108,255,0.6),
+                    rgba(66,200,255,0.4)
+                );
+
+            position: relative;
+        }
+
+        .flow-line::after {
+            content: "";
+
+            position: absolute;
+
+            bottom: -2px;
+            left: 50%;
+
+            transform: translateX(-50%);
+
+            width: 7px;
+            height: 7px;
+
+            border-right: 2px solid #42c8ff;
+            border-bottom: 2px solid #42c8ff;
+
+            transform:
+                translateX(-50%)
+                rotate(45deg);
+        }
+
+        .add-node {
+            margin-top: 15px;
+
+            width: 100%;
+            max-width: 500px;
+            height: 43px;
+
+            border: 1px dashed rgba(139,108,255,0.3);
+            border-radius: 10px;
+
+            background: rgba(139,108,255,0.035);
+
+            color: #9587db;
+
+            cursor: pointer;
+
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .add-node:hover {
+            background: rgba(139,108,255,0.08);
+            border-color: rgba(139,108,255,0.55);
+        }
+
+        /* RIGHT CONFIG */
+
+        .config-panel {
+            border-left: 1px solid rgba(255,255,255,0.07);
+
+            background: #090c15;
+
+            padding: 25px 20px;
+        }
+
+        .config-heading {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            margin-bottom: 22px;
+        }
+
+        .config-heading h2 {
+            font-size: 15px;
+        }
+
+        .status-pill {
+            padding: 5px 8px;
+
+            border-radius: 999px;
+
+            background: rgba(67,223,160,0.08);
+
+            color: #43dfa0;
+
+            font-size: 9px;
+            font-weight: 700;
+        }
+
+        .config-section {
+            padding-bottom: 21px;
+            margin-bottom: 21px;
+
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+        }
+
+        .config-section:last-child {
+            border-bottom: none;
+        }
+
+        .config-section h3 {
+            font-size: 11px;
+            margin-bottom: 13px;
+            color: #bfc5d2;
+        }
+
+        .field {
+            margin-bottom: 12px;
+        }
+
+        .field label {
+            display: block;
+
+            color: #737d90;
+
+            font-size: 10px;
+            margin-bottom: 6px;
+        }
+
+        .field input,
+        .field select,
+        .field textarea {
+            width: 100%;
+
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 8px;
+
+            background: #0e131f;
+            color: #e9ecf4;
+
+            outline: none;
+
+            padding: 9px 10px;
+
+            font-family: inherit;
+            font-size: 10px;
+        }
+
+        .field textarea {
+            min-height: 75px;
+            resize: vertical;
+        }
+
+        .field input:focus,
+        .field select:focus,
+        .field textarea:focus {
+            border-color: rgba(139,108,255,0.55);
+        }
+
+        .range-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .range-row input {
+            padding: 0;
+            border: none;
+            background: transparent;
+        }
+
+        .range-value {
+            min-width: 35px;
+            color: #a99aff;
+            font-size: 10px;
+        }
+
+        /* TOGGLES */
+
+        .toggle-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            margin-bottom: 11px;
+        }
+
+        .toggle-label {
+            color: #8a94a7;
+            font-size: 10px;
+        }
+
+        .toggle {
+            width: 34px;
+            height: 19px;
+
+            border-radius: 999px;
+
+            border: none;
+
+            background: #252c3a;
+
+            position: relative;
+
+            cursor: pointer;
+
+            transition: background 0.2s ease;
+        }
+
+        .toggle::after {
+            content: "";
+
+            position: absolute;
+
+            top: 3px;
+            left: 3px;
+
+            width: 13px;
+            height: 13px;
+
+            border-radius: 50%;
+
+            background: #8c95a7;
+
+            transition: transform 0.2s ease;
+        }
+
+        .toggle.active {
+            background: #7c5cfc;
+        }
+
+        .toggle.active::after {
+            transform: translateX(15px);
+            background: white;
+        }
+
+        /* BOTTOM */
+
+        .canvas-controls {
+            position: absolute;
+
+            bottom: 22px;
+            left: 50%;
+
+            transform: translateX(-50%);
+
+            z-index: 5;
+
+            display: flex;
+            align-items: center;
+            gap: 7px;
+
+            padding: 7px;
+
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 10px;
+
+            background: rgba(12,16,26,0.92);
+
+            backdrop-filter: blur(15px);
+        }
+
+        .canvas-control {
+            width: 32px;
+            height: 30px;
+
+            border: none;
+            border-radius: 7px;
+
+            background: transparent;
+
+            color: #7e889b;
+
+            cursor: pointer;
+        }
+
+        .canvas-control:hover {
+            background: rgba(255,255,255,0.06);
+            color: white;
+        }
+
+        .zoom-value {
+            padding: 0 8px;
+            color: #8a94a7;
+            font-size: 10px;
+        }
+
+        /* TOAST */
+
+        .toast {
+            position: fixed;
+
+            right: 25px;
+            bottom: 25px;
+
+            padding: 13px 17px;
+
+            border: 1px solid rgba(67,223,160,0.2);
+            border-radius: 10px;
+
+            background: #111827;
+
+            color: #c9f7df;
+
+            font-size: 11px;
+
+            box-shadow:
+                0 20px 50px rgba(0,0,0,0.35);
+
+            transform: translateY(100px);
+            opacity: 0;
+
+            transition: all 0.3s ease;
+
+            z-index: 100;
+        }
+
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        /* RESPONSIVE */
+
+        @media (max-width: 1150px) {
+
+            .builder-main {
+                grid-template-columns: 220px 1fr;
+            }
+
+            .config-panel {
+                display: none;
+            }
+        }
+
+        @media (max-width: 760px) {
+
+            .builder-header {
+                padding: 0 15px;
+            }
+
+            .page-title,
+            .header-divider {
+                display: none;
+            }
+
+            .builder-main {
+                grid-template-columns: 1fr;
+            }
+
+            .component-panel {
+                display: none;
+            }
+
+            .canvas-content {
+                padding: 28px 16px 100px;
+            }
+
+            .header-button:not(.save-button) {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="builder-page">
+
+    <!-- HEADER -->
+
+    <header class="builder-header">
+
+        <div class="header-left">
+
+            <a href="index.html" class="brand">
+                <span class="brand-icon">N</span>
+                <span>Nexora</span>
+            </a>
+
+            <div class="header-divider"></div>
+
+            <span class="page-title">
+                Agent Builder
+            </span>
+
+        </div>
+
+
+        <div class="header-actions">
+
+            <button
+                class="header-button"
+                onclick="previewAgent()"
+            >
+                Preview
+            </button>
+
+            <button
+                class="header-button"
+                onclick="testAgent()"
+            >
+                Test Agent
+            </button>
+
+            <button
+                class="header-button save-button"
+                onclick="saveAgent()"
+            >
+                Save Agent
+            </button>
+
+        </div>
+
+    </header>
+
+
+    <!-- MAIN BUILDER -->
+
+    <main class="builder-main">
+
+
+        <!-- LEFT COMPONENT PANEL -->
+
+        <aside class="component-panel">
+
+            <div class="panel-label">
+                Agent Components
+            </div>
+
+            <input
+                type="text"
+                class="component-search"
+                id="componentSearch"
+                placeholder="Search components..."
+                oninput="filterComponents()"
+            >
+
+
+            <div class="component-list">
+
+                <div
+                    class="component-item"
+                    data-name="model"
+                    onclick="addComponent('Model')"
+                >
+                    <div class="component-icon">
+                        ◈
+                    </div>
+
+                    <div>
+                        <strong>Model</strong>
+                        <span>Choose AI model</span>
+                    </div>
+                </div>
+
+
+                <div
+                    class="component-item"
+                    data-name="instructions"
+                    onclick="addComponent('Instructions')"
+                >
+                    <div class="component-icon">
+                        ✦
+                    </div>
+
+                    <div>
+                        <strong>Instructions</strong>
+                        <span>Agent behavior</span>
+                    </div>
+                </div>
+
+
+                <div
+                    class="component-item"
+                    data-name="tools"
+                    onclick="addComponent('Tools')"
+                >
+                    <div class="component-icon">
+                        ⚙
+                    </div>
+
+                    <div>
+                        <strong>Tools</strong>
+                        <span>External capabilities</span>
+                    </div>
+                </div>
+
+
+                <div
+                    class="component-item"
+                    data-name="memory"
+                    onclick="addComponent('Memory')"
+                >
+                    <div class="component-icon">
+                        ◎
+                    </div>
+
+                    <div>
+                        <strong>Memory</strong>
+                        <span>Context management</span>
+                    </div>
+                </div>
+
+
+                <div
+                    class="component-item"
+                    data-name="knowledge"
+                    onclick="addComponent('Knowledge')"
+                >
+                    <div class="component-icon">
+                        ◫
+                    </div>
+
+                    <div>
+                        <strong>Knowledge</strong>
+                        <span>Data sources</span>
+                    </div>
+                </div>
+
+
+                <div
+                    class="component-item"
+                    data-name="approval"
+                    onclick="addComponent('Human Approval')"
+                >
+                    <div class="component-icon">
+                        ✓
+                    </div>
+
+                    <div>
+                        <strong>Human Approval</strong>
+                        <span>Human-in-the-loop</span>
+                    </div>
+                </div>
+
+
+                <div
+                    class="component-item"
+                    data-name="condition"
+                    onclick="addComponent('Condition')"
+                >
+                    <div class="component-icon">
+                        ◇
+                    </div>
+
+                    <div>
+                        <strong>Condition</strong>
+                        <span>Decision logic</span>
+                    </div>
+                </div>
+
+
+                <div
+                    class="component-item"
+                    data-name="action"
+                    onclick="addComponent('Action')"
+                >
+                    <div class="component-icon">
+                        →
+                    </div>
+
+                    <div>
+                        <strong>Action</strong>
+                        <span>Perform operation</span>
+                    </div>
+                </div>
+
+            </div>
+
+
+            <div class="tip-box">
+
+                <strong>💡 Builder Tip</strong>
+
+                <p>
+                    Select a component to add it to your
+                    agent workflow. Configure the selected
+                    component from the right panel.
+                </p>
+
+            </div>
+
+        </aside>
+
+
+        <!-- CANVAS -->
+
+        <section class="builder-canvas">
+
+            <div class="canvas-grid"></div>
+
+            <div class="canvas-content">
+
+                <div class="canvas-heading">
+
+                    <h1>
+                        Build your AI Agent
+                    </h1>
+
+                    <p>
+                        Configure how your agent thinks,
+                        acts and interacts with your workflow.
+                    </p>
+
+                </div>
+
+
+                <div class="flow" id="flow">
+
+
+                    <!-- TRIGGER -->
+
+                    <div class="flow-node">
+
+                        <div class="node-top">
+
+                            <div class="node-title">
+
+                                <div class="node-icon">
+                                    ⚡
+                                </div>
+
+                                <div>
+
+                                    <strong>
+                                        Workflow Trigger
+                                    </strong>
+
+                                    <small>
+                                        Start condition
+                                    </small>
+
+                                </div>
+
+                            </div>
+
+                            <button
+                                class="node-menu"
+                                onclick="nodeMenu('Workflow Trigger')"
+                            >
+                                ⋮
+                            </button>
+
+                        </div>
+
+                        <div class="node-body">
+                            Starts this agent when a new
+                            workflow execution is created.
+                        </div>
+
+                        <div class="node-meta">
+
+                            <span class="node-tag">
+                                Event
+                            </span>
+
+                            <span class="node-tag">
+                                Automatic
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="flow-line"></div>
+
+
+                    <!-- AGENT -->
+
+                    <div class="flow-node">
+
+                        <div class="node-top">
+
+                            <div class="node-title">
+
+                                <div class="node-icon">
+                                    ✦
+                                </div>
+
+                                <div>
+
+                                    <strong>
+                                        Research Agent
+                                    </strong>
+
+                                    <small>
+                                        AI Agent
+                                    </small>
+
+                                </div>
+
+                            </div>
+
+                            <button
+                                class="node-menu"
+                                onclick="nodeMenu('Research Agent')"
+                            >
+                                ⋮
+                            </button>
+
+                        </div>
+
+                        <div class="node-body">
+                            An autonomous research assistant
+                            that analyzes information and
+                            prepares structured results.
+                        </div>
+
+                        <div class="node-meta">
+
+                            <span class="node-tag">
+                                GPT-5.6
+                            </span>
+
+                            <span class="node-tag">
+                                Temperature 0.4
+                            </span>
+
+                            <span class="node-tag">
+                                Web Search
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="flow-line"></div>
+
+
+                    <!-- APPROVAL -->
+
+                    <div class="flow-node">
+
+                        <div class="node-top">
+
+                            <div class="node-title">
+
+                                <div class="node-icon">
+                                    ✓
+                                </div>
+
+                                <div>
+
+                                    <strong>
+                                        Human Approval
+                                    </strong>
+
+                                    <small>
+                                        Review checkpoint
+                                    </small>
+
+                                </div>
+
+                            </div>
+
+                            <button
+                                class="node-menu"
+                                onclick="nodeMenu('Human Approval')"
+                            >
+                                ⋮
+                            </button>
+
+                        </div>
+
+                        <div class="node-body">
+                            Pause execution and request
+                            human approval before continuing.
+                        </div>
+
+                        <div class="node-meta">
+
+                            <span class="node-tag">
+                                Required
+                            </span>
+
+                            <span class="node-tag">
+                                High Risk
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="flow-line"></div>
+
+
+                    <!-- ACTION -->
+
+                    <div class="flow-node">
+
+                        <div class="node-top">
+
+                            <div class="node-title">
+
+                                <div class="node-icon">
+                                    →
+                                </div>
+
+                                <div>
+
+                                    <strong>
+                                        Publish Result
+                                    </strong>
+
+                                    <small>
+                                        Final action
+                                    </small>
+
+                                </div>
+
+                            </div>
+
+                            <button
+                                class="node-menu"
+                                onclick="nodeMenu('Publish Result')"
+                            >
+                                ⋮
+                            </button>
+
+                        </div>
+
+                        <div class="node-body">
+                            Sends the approved result to
+                            the configured destination.
+                        </div>
+
+                        <div class="node-meta">
+
+                            <span class="node-tag">
+                                API
+                            </span>
+
+                            <span class="node-tag">
+                                Automatic
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <button
+                        class="add-node"
+                        onclick="openComponentMessage()"
+                    >
+                        + Add component to workflow
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- CANVAS CONTROLS -->
+
+            <div class="canvas-controls">
+
+                <button
+                    class="canvas-control"
+                    onclick="zoomOut()"
+                >
+                    −
+                </button>
+
+                <span
+                    class="zoom-value"
+                    id="zoomValue"
+                >
+                    100%
+                </span>
+
+                <button
+                    class="canvas-control"
+                    onclick="zoomIn()"
+                >
+                    +
+                </button>
+
+                <button
+                    class="canvas-control"
+                    onclick="resetZoom()"
+                >
+                    ⛶
+                </button>
+
+            </div>
+
+        </section>
+
+
+        <!-- RIGHT CONFIGURATION -->
+
+        <aside class="config-panel">
+
+            <div class="config-heading">
+
+                <h2>
+                    Agent Configuration
+                </h2>
+
+                <span class="status-pill">
+                    Draft
+                </span>
+
+            </div>
+
+
+            <!-- BASIC -->
+
+            <div class="config-section">
+
+                <h3>
+                    Basic Information
+                </h3>
+
+                <div class="field">
+
+                    <label>
+                        Agent name
+                    </label>
+
+                    <input
+                        type="text"
+                        id="agentName"
+                        value="Research Agent"
+                    >
+
+                </div>
+
+
+                <div class="field">
+
+                    <label>
+                        Description
+                    </label>
+
+                    <textarea
+                        id="agentDescription"
+                    >An autonomous AI research assistant for collecting and analyzing information.</textarea>
+
+                </div>
+
+            </div>
+
+
+            <!-- MODEL -->
+
+            <div class="config-section">
+
+                <h3>
+                    Model
+                </h3>
+
+                <div class="field">
+
+                    <label>
+                        AI Model
+                    </label>
+
+                    <select id="model">
+
+                        <option>
+                            GPT-5.6
+                        </option>
+
+                        <option>
+                            GPT-5.6 Mini
+                        </option>
+
+                        <option>
+                            Claude Sonnet
+                        </option>
+
+                        <option>
+                            Gemini Pro
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="field">
+
+                    <label>
+                        Temperature
+                    </label>
+
+                    <div class="range-row">
+
+                        <input
+                            type="range"
+                            id="temperature"
+                            min="0"
+                            max="100"
+                            value="40"
+                            oninput="updateTemperature()"
+                        >
+
+                        <span
+                            class="range-value"
+                            id="temperatureValue"
+                        >
+                            0.4
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- BEHAVIOR -->
+
+            <div class="config-section">
+
+                <h3>
+                    Behavior
+                </h3>
+
+                <div class="toggle-row">
+
+                    <span class="toggle-label">
+                        Web search
+                    </span>
+
+                    <button
+                        class="toggle active"
+                        onclick="toggleSetting(this)"
+                    ></button>
+
+                </div>
+
+
+                <div class="toggle-row">
+
+                    <span class="toggle-label">
+                        Long-term memory
+                    </span>
+
+                    <button
+                        class="toggle active"
+                        onclick="toggleSetting(this)"
+                    ></button>
+
+                </div>
+
+
+                <div class="toggle-row">
+
+                    <span class="toggle-label">
+                        Tool execution
+                    </span>
+
+                    <button
+                        class="toggle active"
+                        onclick="toggleSetting(this)"
+                    ></button>
+
+                </div>
+
+
+                <div class="toggle-row">
+
+                    <span class="toggle-label">
+                        Human approval
+                    </span>
+
+                    <button
+                        class="toggle active"
+                        onclick="toggleSetting(this)"
+                    ></button>
+
+                </div>
+
+            </div>
+
+
+            <!-- PERMISSIONS -->
+
+            <div class="config-section">
+
+                <h3>
+                    Permissions
+                </h3>
+
+                <div class="toggle-row">
+
+                    <span class="toggle-label">
+                        Read workspace data
+                    </span>
+
+                    <button
+                        class="toggle active"
+                        onclick="toggleSetting(this)"
+                    ></button>
+
+                </div>
+
+
+                <div class="toggle-row">
+
+                    <span class="toggle-label">
+                        Execute workflows
+                    </span>
+
+                    <button
+                        class="toggle active"
+                        onclick="toggleSetting(this)"
+                    ></button>
+
+                </div>
+
+
+                <div class="toggle-row">
+
+                    <span class="toggle-label">
+                        External API calls
+                    </span>
+
+                    <button
+                        class="toggle"
+                        onclick="toggleSetting(this)"
+                    ></button>
+
+                </div>
+
+            </div>
+
+        </aside>
+
+    </main>
+
+</div>
+
+
+<div
+    class="toast"
+    id="toast"
+></div>
+
+
+<script>
+
+    /* =============================================
+       TOAST
+       ============================================= */
+
+    function showToast(message) {
+
+        const toast =
+            document.getElementById("toast");
+
+        toast.textContent = message;
+
+        toast.classList.add("show");
+
+        setTimeout(function() {
+
+            toast.classList.remove("show");
+
+        }, 2200);
+    }
+
+
+    /* =============================================
+       SAVE AGENT
+       ============================================= */
+
+    function saveAgent() {
+
+        const name =
+            document.getElementById("agentName").value;
+
+        const description =
+            document.getElementById("agentDescription").value;
+
+        const model =
+            document.getElementById("model").value;
+
+        const temperature =
+            document.getElementById("temperature").value / 100;
+
+
+        const agent = {
+
+            name: name,
+
+            description: description,
+
+            model: model,
+
+            temperature: temperature,
+
+            updatedAt:
+                new Date().toISOString()
+
+        };
+
+
+        localStorage.setItem(
+            "nexora_agent_builder",
+            JSON.stringify(agent)
+        );
+
+
+        showToast(
+            "✓ Agent configuration saved successfully"
+        );
+    }
+
+
+    /* =============================================
+       TEST AGENT
+       ============================================= */
+
+    function testAgent() {
+
+        showToast(
+            "▶ Test execution started..."
+        );
+
+        setTimeout(function() {
+
+            showToast(
+                "✓ Test execution completed successfully"
+            );
+
+        }, 1600);
+    }
+
+
+    /* =============================================
+       PREVIEW
+       ============================================= */
+
+    function previewAgent() {
+
+        const name =
+            document.getElementById("agentName").value;
+
+        alert(
+            "Agent Preview\n\n" +
+            "Name: " + name + "\n" +
+            "Model: " +
+            document.getElementById("model").value +
+            "\n\nStatus: Ready"
+        );
+    }
+
+
+    /* =============================================
+       TEMPERATURE
+       ============================================= */
+
+    function updateTemperature() {
+
+        const value =
+            document.getElementById("temperature").value;
+
+        document.getElementById(
+            "temperatureValue"
+        ).textContent =
+            (value / 100).toFixed(1);
+    }
+
+
+    /* =============================================
+       TOGGLES
+       ============================================= */
+
+    function toggleSetting(button) {
+
+        button.classList.toggle("active");
+
+        showToast(
+            button.classList.contains("active")
+                ? "Setting enabled"
+                : "Setting disabled"
+        );
+    }
+
+
+    /* =============================================
+       COMPONENT SEARCH
+       ============================================= */
+
+    function filterComponents() {
+
+        const search =
+            document
+                .getElementById("componentSearch")
+                .value
+                .toLowerCase();
+
+        const items =
+            document.querySelectorAll(
+                ".component-item"
+            );
+
+        items.forEach(function(item) {
+
+            const name =
+                item.dataset.name.toLowerCase();
+
+            item.style.display =
+                name.includes(search)
+                    ? "flex"
+                    : "none";
+
+        });
+    }
+
+
+    /* =============================================
+       ADD COMPONENT
+       ============================================= */
+
+    function addComponent(name) {
+
+        showToast(
+            "＋ " + name +
+            " component selected"
+        );
+    }
+
+
+    function openComponentMessage() {
+
+        showToast(
+            "Select a component from the left panel"
+        );
+    }
+
+
+    /* =============================================
+       NODE MENU
+       ============================================= */
+
+    function nodeMenu(name) {
+
+        const choice =
+            confirm(
+                "Configure " +
+                name +
+                "?\n\nThis demo opens the configuration panel."
+            );
+
+        if (choice) {
+
+            showToast(
+                "Configuration selected: " +
+                name
+            );
+
+        }
+    }
+
+
+    /* =============================================
+       ZOOM
+       ============================================= */
+
+    let zoom = 100;
+
+
+    function updateZoom() {
+
+        document.getElementById(
+            "zoomValue"
+        ).textContent =
+            zoom + "%";
+
+        document.querySelector(
+            ".flow"
+        ).style.transform =
+            "scale(" + zoom / 100 + ")";
+
+        document.querySelector(
+            ".flow"
+        ).style.transformOrigin =
+            "top center";
+    }
+
+
+    function zoomIn() {
+
+        if (zoom < 140) {
+
+            zoom += 10;
+
+            updateZoom();
+        }
+    }
+
+
+    function zoomOut() {
+
+        if (zoom > 70) {
+
+            zoom -= 10;
+
+            updateZoom();
+        }
+    }
+
+
+    function resetZoom() {
+
+        zoom = 100;
+
+        updateZoom();
+    }
+
+
+    /* =============================================
+       LOAD SAVED AGENT
+       ============================================= */
+
+    window.addEventListener(
+        "DOMContentLoaded",
+        function() {
+
+            const saved =
+                localStorage.getItem(
+                    "nexora_agent_builder"
+                );
+
+            if (!saved) {
+                return;
+            }
+
+            try {
+
+                const agent =
+                    JSON.parse(saved);
+
+
+                if (agent.name) {
+
+                    document.getElementById(
+                        "agentName"
+                    ).value =
+                        agent.name;
+                }
+
+
+                if (agent.description) {
+
+                    document.getElementById(
+                        "agentDescription"
+                    ).value =
+                        agent.description;
+                }
+
+
+                if (agent.model) {
+
+                    document.getElementById(
+                        "model"
+                    ).value =
+                        agent.model;
+                }
+
+
+                if (
+                    typeof agent.temperature ===
+                    "number"
+                ) {
+
+                    const value =
+                        agent.temperature * 100;
+
+                    document.getElementById(
+                        "temperature"
+                    ).value =
+                        value;
+
+                    updateTemperature();
+                }
+
+            } catch (error) {
+
+                console.log(
+                    "Could not load saved agent."
+                );
+            }
+
+        }
+    );
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,2087 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Agent Profile | Nexora</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background: #070911;
+            color: #f5f7ff;
+            font-family: "DM Sans", Arial, sans-serif;
+        }
+
+        button,
+        input,
+        select,
+        textarea {
+            font-family: inherit;
+        }
+
+        .profile-page {
+            min-height: 100vh;
+        }
+
+        /* HEADER */
+
+        .topbar {
+            height: 72px;
+            padding: 0 30px;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            border-bottom: 1px solid rgba(255,255,255,0.07);
+
+            background: #090c15;
+
+            position: sticky;
+            top: 0;
+            z-index: 20;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+
+            color: white;
+            text-decoration: none;
+
+            font-size: 20px;
+            font-weight: 800;
+        }
+
+        .brand-icon {
+            width: 36px;
+            height: 36px;
+
+            display: grid;
+            place-items: center;
+
+            border-radius: 11px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #8b6cff,
+                    #42c8ff
+                );
+
+            font-weight: 900;
+        }
+
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+
+            color: #687286;
+            font-size: 12px;
+        }
+
+        .breadcrumb strong {
+            color: #d9deea;
+        }
+
+        .top-actions {
+            display: flex;
+            gap: 9px;
+        }
+
+        .button {
+            height: 38px;
+            padding: 0 14px;
+
+            border-radius: 9px;
+
+            border: 1px solid rgba(255,255,255,0.08);
+
+            background: #0e131f;
+            color: #cbd1dd;
+
+            cursor: pointer;
+
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .button:hover {
+            border-color: rgba(139,108,255,0.4);
+        }
+
+        .primary-button {
+            background: #7c5cfc;
+            color: white;
+            border-color: #7c5cfc;
+        }
+
+        .danger-button {
+            color: #ff8d99;
+        }
+
+        /* PAGE */
+
+        .content {
+            max-width: 1420px;
+            margin: auto;
+            padding: 30px;
+        }
+
+        /* AGENT HEADER */
+
+        .agent-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            padding: 25px;
+
+            border: 1px solid rgba(255,255,255,0.07);
+            border-radius: 18px;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    rgba(139,108,255,0.07),
+                    rgba(255,255,255,0.015)
+                );
+
+            margin-bottom: 20px;
+        }
+
+        .agent-main {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+        }
+
+        .agent-avatar {
+            width: 68px;
+            height: 68px;
+
+            display: grid;
+            place-items: center;
+
+            border-radius: 18px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #7c5cfc,
+                    #42c8ff
+                );
+
+            color: white;
+
+            font-size: 27px;
+            font-weight: 800;
+
+            box-shadow:
+                0 15px 35px rgba(124,92,252,0.2);
+        }
+
+        .agent-info h1 {
+            font-size: 25px;
+            letter-spacing: -0.8px;
+        }
+
+        .agent-info p {
+            color: #747e91;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+
+        .status {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+
+            margin-top: 10px;
+
+            color: #43dfa0;
+            font-size: 10px;
+            font-weight: 700;
+        }
+
+        .status-dot {
+            width: 7px;
+            height: 7px;
+
+            border-radius: 50%;
+
+            background: #43dfa0;
+
+            box-shadow:
+                0 0 10px rgba(67,223,160,0.7);
+        }
+
+        .agent-actions {
+            display: flex;
+            gap: 9px;
+        }
+
+        /* STATS */
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 14px;
+
+            margin-bottom: 20px;
+        }
+
+        .stat {
+            padding: 18px;
+
+            border: 1px solid rgba(255,255,255,0.07);
+            border-radius: 14px;
+
+            background: #0e131f;
+        }
+
+        .stat-label {
+            color: #697386;
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+        }
+
+        .stat-value {
+            margin-top: 9px;
+
+            font-size: 23px;
+            font-weight: 800;
+        }
+
+        .stat-change {
+            margin-top: 6px;
+
+            color: #43dfa0;
+            font-size: 10px;
+        }
+
+        /* TABS */
+
+        .tabs {
+            display: flex;
+            gap: 3px;
+
+            padding: 5px;
+
+            border: 1px solid rgba(255,255,255,0.07);
+            border-radius: 11px;
+
+            background: #0b0f18;
+
+            margin-bottom: 20px;
+        }
+
+        .tab {
+            padding: 10px 15px;
+
+            border: none;
+            border-radius: 8px;
+
+            background: transparent;
+
+            color: #727c90;
+
+            cursor: pointer;
+
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .tab:hover {
+            color: white;
+        }
+
+        .tab.active {
+            background: #161d2b;
+            color: white;
+        }
+
+        /* GRID */
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1.4fr 0.8fr;
+            gap: 20px;
+        }
+
+        .card {
+            border: 1px solid rgba(255,255,255,0.07);
+            border-radius: 15px;
+
+            background: #0e131f;
+
+            padding: 20px;
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            margin-bottom: 18px;
+        }
+
+        .card-header h2 {
+            font-size: 14px;
+        }
+
+        .card-header span {
+            color: #667084;
+            font-size: 10px;
+        }
+
+        /* EXECUTION CHART */
+
+        .chart {
+            height: 235px;
+
+            display: flex;
+            align-items: end;
+            gap: 13px;
+
+            padding:
+                15px
+                5px
+                0;
+
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+        }
+
+        .bar-group {
+            flex: 1;
+            height: 100%;
+
+            display: flex;
+            align-items: end;
+            justify-content: center;
+            gap: 4px;
+        }
+
+        .bar {
+            width: 9px;
+
+            border-radius: 4px 4px 0 0;
+
+            transition:
+                height 0.5s ease,
+                opacity 0.2s ease;
+
+            cursor: pointer;
+        }
+
+        .bar.success {
+            background: #43dfa0;
+        }
+
+        .bar.failure {
+            background: #ff6678;
+        }
+
+        .bar:hover {
+            opacity: 0.75;
+        }
+
+        .chart-labels {
+            display: flex;
+            justify-content: space-between;
+
+            padding-top: 8px;
+
+            color: #535d70;
+            font-size: 9px;
+        }
+
+        /* RECENT EXECUTIONS */
+
+        .execution {
+            display: grid;
+            grid-template-columns: 38px 1fr auto;
+            align-items: center;
+            gap: 11px;
+
+            padding: 13px 0;
+
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .execution:last-child {
+            border-bottom: none;
+        }
+
+        .execution-icon {
+            width: 34px;
+            height: 34px;
+
+            display: grid;
+            place-items: center;
+
+            border-radius: 9px;
+
+            background: rgba(67,223,160,0.08);
+            color: #43dfa0;
+        }
+
+        .execution-icon.failed {
+            background: rgba(255,102,120,0.08);
+            color: #ff6678;
+        }
+
+        .execution strong {
+            display: block;
+            color: #dfe3ec;
+            font-size: 11px;
+        }
+
+        .execution small {
+            display: block;
+            margin-top: 4px;
+
+            color: #606a7e;
+            font-size: 9px;
+        }
+
+        .execution-status {
+            padding: 5px 8px;
+
+            border-radius: 6px;
+
+            background: rgba(67,223,160,0.08);
+            color: #43dfa0;
+
+            font-size: 8px;
+            font-weight: 700;
+        }
+
+        .execution-status.failed {
+            background: rgba(255,102,120,0.08);
+            color: #ff6678;
+        }
+
+        /* CONFIG */
+
+        .config-list {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .config-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            padding: 13px 0;
+
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .config-row:last-child {
+            border-bottom: none;
+        }
+
+        .config-row span:first-child {
+            color: #6d778a;
+            font-size: 10px;
+        }
+
+        .config-row span:last-child {
+            color: #d4d9e4;
+            font-size: 10px;
+            font-weight: 600;
+        }
+
+        /* TOGGLE */
+
+        .toggle {
+            width: 35px;
+            height: 19px;
+
+            border: none;
+            border-radius: 999px;
+
+            background: #252c3a;
+
+            cursor: pointer;
+
+            position: relative;
+        }
+
+        .toggle::after {
+            content: "";
+
+            position: absolute;
+
+            width: 13px;
+            height: 13px;
+
+            left: 3px;
+            top: 3px;
+
+            border-radius: 50%;
+
+            background: #8b94a7;
+
+            transition: transform 0.2s ease;
+        }
+
+        .toggle.active {
+            background: #7c5cfc;
+        }
+
+        .toggle.active::after {
+            transform: translateX(16px);
+            background: white;
+        }
+
+        /* ACTIVITY */
+
+        .activity {
+            margin-top: 20px;
+        }
+
+        .activity-item {
+            display: flex;
+            gap: 12px;
+
+            padding: 14px 0;
+
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .activity-dot {
+            width: 8px;
+            height: 8px;
+
+            flex-shrink: 0;
+
+            margin-top: 5px;
+
+            border-radius: 50%;
+
+            background: #8b6cff;
+        }
+
+        .activity-item strong {
+            display: block;
+            font-size: 10px;
+            color: #cfd4df;
+        }
+
+        .activity-item p {
+            margin-top: 4px;
+
+            color: #626c80;
+            font-size: 9px;
+        }
+
+        /* TAB CONTENT */
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* MODAL */
+
+        .modal {
+            position: fixed;
+            inset: 0;
+
+            display: none;
+            align-items: center;
+            justify-content: center;
+
+            background: rgba(0,0,0,0.7);
+
+            z-index: 100;
+
+            padding: 20px;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-box {
+            width: 100%;
+            max-width: 430px;
+
+            padding: 25px;
+
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 16px;
+
+            background: #111725;
+
+            box-shadow:
+                0 30px 90px rgba(0,0,0,0.5);
+        }
+
+        .modal-box h2 {
+            font-size: 18px;
+            margin-bottom: 9px;
+        }
+
+        .modal-box p {
+            color: #737d90;
+            font-size: 11px;
+            line-height: 1.6;
+        }
+
+        .modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 8px;
+            margin-top: 22px;
+        }
+
+        .toast {
+            position: fixed;
+
+            right: 25px;
+            bottom: 25px;
+
+            padding: 13px 17px;
+
+            border-radius: 10px;
+
+            background: #111827;
+
+            border: 1px solid rgba(67,223,160,0.2);
+
+            color: #c9f7df;
+
+            font-size: 11px;
+
+            transform: translateY(100px);
+            opacity: 0;
+
+            transition: 0.3s ease;
+
+            z-index: 200;
+        }
+
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        /* RESPONSIVE */
+
+        @media (max-width: 1000px) {
+
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .agent-header {
+                align-items: flex-start;
+                gap: 20px;
+                flex-direction: column;
+            }
+        }
+
+        @media (max-width: 650px) {
+
+            .topbar {
+                padding: 0 15px;
+            }
+
+            .breadcrumb {
+                display: none;
+            }
+
+            .content {
+                padding: 18px 14px;
+            }
+
+            .stats {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .agent-main {
+                align-items: flex-start;
+            }
+
+            .agent-avatar {
+                width: 54px;
+                height: 54px;
+                font-size: 21px;
+            }
+
+            .agent-info h1 {
+                font-size: 20px;
+            }
+
+            .agent-actions {
+                width: 100%;
+            }
+
+            .agent-actions .button {
+                flex: 1;
+            }
+
+            .tabs {
+                overflow-x: auto;
+            }
+
+            .tab {
+                white-space: nowrap;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="profile-page">
+
+    <!-- TOP BAR -->
+
+    <header class="topbar">
+
+        <a href="index.html" class="brand">
+            <span class="brand-icon">N</span>
+            <span>Nexora</span>
+        </a>
+
+        <div class="breadcrumb">
+            <span>Agents</span>
+            <span>/</span>
+            <strong>Research Agent</strong>
+        </div>
+
+        <div class="top-actions">
+
+            <button
+                class="button"
+                onclick="editAgent()"
+            >
+                Edit
+            </button>
+
+            <button
+                class="button primary-button"
+                onclick="runAgent()"
+            >
+                ▶ Run Agent
+            </button>
+
+        </div>
+
+    </header>
+
+
+    <main class="content">
+
+        <!-- AGENT HEADER -->
+
+        <section class="agent-header">
+
+            <div class="agent-main">
+
+                <div class="agent-avatar">
+                    R
+                </div>
+
+                <div class="agent-info">
+
+                    <h1>
+                        Research Agent
+                    </h1>
+
+                    <p>
+                        Autonomous research and information analysis agent
+                    </p>
+
+                    <div class="status">
+
+                        <span class="status-dot"></span>
+
+                        Operational · Active now
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="agent-actions">
+
+                <button
+                    class="button"
+                    id="pauseButton"
+                    onclick="togglePause()"
+                >
+                    ⏸ Pause
+                </button>
+
+                <button
+                    class="button danger-button"
+                    onclick="deleteAgent()"
+                >
+                    Delete
+                </button>
+
+            </div>
+
+        </section>
+
+
+        <!-- STATS -->
+
+        <section class="stats">
+
+            <div class="stat">
+
+                <div class="stat-label">
+                    Executions
+                </div>
+
+                <div class="stat-value">
+                    1,284
+                </div>
+
+                <div class="stat-change">
+                    +18.4% this month
+                </div>
+
+            </div>
+
+
+            <div class="stat">
+
+                <div class="stat-label">
+                    Success Rate
+                </div>
+
+                <div class="stat-value">
+                    96.8%
+                </div>
+
+                <div class="stat-change">
+                    +2.1% improvement
+                </div>
+
+            </div>
+
+
+            <div class="stat">
+
+                <div class="stat-label">
+                    Avg. Latency
+                </div>
+
+                <div class="stat-value">
+                    4.2s
+                </div>
+
+                <div class="stat-change">
+                    12% faster
+                </div>
+
+            </div>
+
+
+            <div class="stat">
+
+                <div class="stat-label">
+                    Cost
+                </div>
+
+                <div class="stat-value">
+                    $24.80
+                </div>
+
+                <div class="stat-change">
+                    This month
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- TABS -->
+
+        <nav class="tabs">
+
+            <button
+                class="tab active"
+                onclick="showTab('overview', this)"
+            >
+                Overview
+            </button>
+
+            <button
+                class="tab"
+                onclick="showTab('executions', this)"
+            >
+                Executions
+            </button>
+
+            <button
+                class="tab"
+                onclick="showTab('activity', this)"
+            >
+                Activity
+            </button>
+
+            <button
+                class="tab"
+                onclick="showTab('configuration', this)"
+            >
+                Configuration
+            </button>
+
+            <button
+                class="tab"
+                onclick="showTab('permissions', this)"
+            >
+                Permissions
+            </button>
+
+        </nav>
+
+
+        <!-- ==========================================
+             OVERVIEW
+             ========================================== -->
+
+        <section
+            id="overview"
+            class="tab-content active"
+        >
+
+            <div class="dashboard-grid">
+
+                <!-- EXECUTION CHART -->
+
+                <div class="card">
+
+                    <div class="card-header">
+
+                        <h2>
+                            Execution Performance
+                        </h2>
+
+                        <span>
+                            Last 7 days
+                        </span>
+
+                    </div>
+
+
+                    <div class="chart">
+
+                        <div class="bar-group">
+                            <div
+                                class="bar success"
+                                style="height:55%"
+                                title="Monday"
+                            ></div>
+
+                            <div
+                                class="bar failure"
+                                style="height:10%"
+                            ></div>
+                        </div>
+
+                        <div class="bar-group">
+                            <div
+                                class="bar success"
+                                style="height:68%"
+                            ></div>
+
+                            <div
+                                class="bar failure"
+                                style="height:8%"
+                            ></div>
+                        </div>
+
+                        <div class="bar-group">
+                            <div
+                                class="bar success"
+                                style="height:74%"
+                            ></div>
+
+                            <div
+                                class="bar failure"
+                                style="height:12%"
+                            ></div>
+                        </div>
+
+                        <div class="bar-group">
+                            <div
+                                class="bar success"
+                                style="height:63%"
+                            ></div>
+
+                            <div
+                                class="bar failure"
+                                style="height:7%"
+                            ></div>
+                        </div>
+
+                        <div class="bar-group">
+                            <div
+                                class="bar success"
+                                style="height:88%"
+                            ></div>
+
+                            <div
+                                class="bar failure"
+                                style="height:6%"
+                            ></div>
+                        </div>
+
+                        <div class="bar-group">
+                            <div
+                                class="bar success"
+                                style="height:79%"
+                            ></div>
+
+                            <div
+                                class="bar failure"
+                                style="height:9%"
+                            ></div>
+                        </div>
+
+                        <div class="bar-group">
+                            <div
+                                class="bar success"
+                                style="height:94%"
+                            ></div>
+
+                            <div
+                                class="bar failure"
+                                style="height:5%"
+                            ></div>
+                        </div>
+
+                    </div>
+
+
+                    <div class="chart-labels">
+
+                        <span>Mon</span>
+                        <span>Tue</span>
+                        <span>Wed</span>
+                        <span>Thu</span>
+                        <span>Fri</span>
+                        <span>Sat</span>
+                        <span>Sun</span>
+
+                    </div>
+
+                </div>
+
+
+                <!-- CONFIGURATION SUMMARY -->
+
+                <div class="card">
+
+                    <div class="card-header">
+
+                        <h2>
+                            Configuration
+                        </h2>
+
+                        <span>
+                            Current
+                        </span>
+
+                    </div>
+
+
+                    <div class="config-list">
+
+                        <div class="config-row">
+                            <span>Model</span>
+                            <span>GPT-5.6</span>
+                        </div>
+
+                        <div class="config-row">
+                            <span>Temperature</span>
+                            <span>0.4</span>
+                        </div>
+
+                        <div class="config-row">
+                            <span>Memory</span>
+                            <span>Enabled</span>
+                        </div>
+
+                        <div class="config-row">
+                            <span>Web Search</span>
+                            <span>Enabled</span>
+                        </div>
+
+                        <div class="config-row">
+                            <span>Approval</span>
+                            <span>Required</span>
+                        </div>
+
+                        <div class="config-row">
+                            <span>Version</span>
+                            <span>v2.4.1</span>
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- RECENT EXECUTIONS -->
+
+                <div class="card">
+
+                    <div class="card-header">
+
+                        <h2>
+                            Recent Executions
+                        </h2>
+
+                        <span>
+                            View all
+                        </span>
+
+                    </div>
+
+
+                    <div class="execution">
+
+                        <div class="execution-icon">
+                            ✓
+                        </div>
+
+                        <div>
+
+                            <strong>
+                                Market Research Workflow
+                            </strong>
+
+                            <small>
+                                2 minutes ago · 4.8s
+                            </small>
+
+                        </div>
+
+                        <span class="execution-status">
+                            Success
+                        </span>
+
+                    </div>
+
+
+                    <div class="execution">
+
+                        <div class="execution-icon">
+                            ✓
+                        </div>
+
+                        <div>
+
+                            <strong>
+                                Competitor Analysis
+                            </strong>
+
+                            <small>
+                                18 minutes ago · 6.1s
+                            </small>
+
+                        </div>
+
+                        <span class="execution-status">
+                            Success
+                        </span>
+
+                    </div>
+
+
+                    <div class="execution">
+
+                        <div class="execution-icon failed">
+                            !
+                        </div>
+
+                        <div>
+
+                            <strong>
+                                Product Research
+                            </strong>
+
+                            <small>
+                                41 minutes ago · 2.7s
+                            </small>
+
+                        </div>
+
+                        <span class="execution-status failed">
+                            Failed
+                        </span>
+
+                    </div>
+
+
+                    <div class="execution">
+
+                        <div class="execution-icon">
+                            ✓
+                        </div>
+
+                        <div>
+
+                            <strong>
+                                Weekly Intelligence
+                            </strong>
+
+                            <small>
+                                1 hour ago · 5.4s
+                            </small>
+
+                        </div>
+
+                        <span class="execution-status">
+                            Success
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <!-- LIVE ACTIVITY -->
+
+                <div class="card">
+
+                    <div class="card-header">
+
+                        <h2>
+                            Live Activity
+                        </h2>
+
+                        <span>
+                            Just now
+                        </span>
+
+                    </div>
+
+
+                    <div class="activity">
+
+                        <div class="activity-item">
+
+                            <div class="activity-dot"></div>
+
+                            <div>
+
+                                <strong>
+                                    Agent completed a task
+                                </strong>
+
+                                <p>
+                                    Market Research Workflow
+                                    completed successfully.
+                                </p>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="activity-item">
+
+                            <div class="activity-dot"></div>
+
+                            <div>
+
+                                <strong>
+                                    Tool executed
+                                </strong>
+
+                                <p>
+                                    Web Search Tool returned
+                                    12 results.
+                                </p>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="activity-item">
+
+                            <div class="activity-dot"></div>
+
+                            <div>
+
+                                <strong>
+                                    Memory updated
+                                </strong>
+
+                                <p>
+                                    Research context was stored.
+                                </p>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ==========================================
+             EXECUTIONS
+             ========================================== -->
+
+        <section
+            id="executions"
+            class="tab-content"
+        >
+
+            <div class="card">
+
+                <div class="card-header">
+
+                    <h2>
+                        Execution History
+                    </h2>
+
+                    <span>
+                        1,284 total
+                    </span>
+
+                </div>
+
+
+                <div class="execution">
+                    <div class="execution-icon">
+                        ✓
+                    </div>
+
+                    <div>
+                        <strong>
+                            Market Research Workflow
+                        </strong>
+
+                        <small>
+                            Today · 14:32 · 4.8s · $0.04
+                        </small>
+                    </div>
+
+                    <span class="execution-status">
+                        Success
+                    </span>
+                </div>
+
+
+                <div class="execution">
+                    <div class="execution-icon">
+                        ✓
+                    </div>
+
+                    <div>
+                        <strong>
+                            Competitor Analysis
+                        </strong>
+
+                        <small>
+                            Today · 14:14 · 6.1s · $0.06
+                        </small>
+                    </div>
+
+                    <span class="execution-status">
+                        Success
+                    </span>
+                </div>
+
+
+                <div class="execution">
+                    <div class="execution-icon failed">
+                        !
+                    </div>
+
+                    <div>
+                        <strong>
+                            Product Research
+                        </strong>
+
+                        <small>
+                            Today · 13:51 · 2.7s · $0.02
+                        </small>
+                    </div>
+
+                    <span class="execution-status failed">
+                        Failed
+                    </span>
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ==========================================
+             ACTIVITY
+             ========================================== -->
+
+        <section
+            id="activity"
+            class="tab-content"
+        >
+
+            <div class="card">
+
+                <div class="card-header">
+
+                    <h2>
+                        Agent Activity Log
+                    </h2>
+
+                    <span>
+                        Live
+                    </span>
+
+                </div>
+
+
+                <div class="activity">
+
+                    <div class="activity-item">
+                        <div class="activity-dot"></div>
+
+                        <div>
+                            <strong>
+                                Workflow started
+                            </strong>
+
+                            <p>
+                                Market Research Workflow
+                                started at 14:32.
+                            </p>
+                        </div>
+                    </div>
+
+
+                    <div class="activity-item">
+                        <div class="activity-dot"></div>
+
+                        <div>
+                            <strong>
+                                Tool executed
+                            </strong>
+
+                            <p>
+                                Web Search Tool executed
+                                successfully.
+                            </p>
+                        </div>
+                    </div>
+
+
+                    <div class="activity-item">
+                        <div class="activity-dot"></div>
+
+                        <div>
+                            <strong>
+                                Agent response generated
+                            </strong>
+
+                            <p>
+                                Research Agent generated
+                                a structured response.
+                            </p>
+                        </div>
+                    </div>
+
+
+                    <div class="activity-item">
+                        <div class="activity-dot"></div>
+
+                        <div>
+                            <strong>
+                                Execution completed
+                            </strong>
+
+                            <p>
+                                Workflow finished successfully.
+                            </p>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ==========================================
+             CONFIGURATION
+             ========================================== -->
+
+        <section
+            id="configuration"
+            class="tab-content"
+        >
+
+            <div class="dashboard-grid">
+
+                <div class="card">
+
+                    <div class="card-header">
+                        <h2>
+                            Agent Configuration
+                        </h2>
+                    </div>
+
+                    <div class="config-list">
+
+                        <div class="config-row">
+                            <span>Agent name</span>
+                            <span>Research Agent</span>
+                        </div>
+
+                        <div class="config-row">
+                            <span>Model</span>
+                            <span>GPT-5.6</span>
+                        </div>
+
+                        <div class="config-row">
+                            <span>Temperature</span>
+                            <span>0.4</span>
+                        </div>
+
+                        <div class="config-row">
+                            <span>Maximum tokens</span>
+                            <span>8,192</span>
+                        </div>
+
+                        <div class="config-row">
+                            <span>Memory</span>
+                            <span>Enabled</span>
+                        </div>
+
+                        <div class="config-row">
+                            <span>Web search</span>
+                            <span>Enabled</span>
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="card">
+
+                    <div class="card-header">
+                        <h2>
+                            Agent Controls
+                        </h2>
+                    </div>
+
+                    <div class="config-row">
+
+                        <span>
+                            Web Search
+                        </span>
+
+                        <button
+                            class="toggle active"
+                            onclick="toggleControl(this)"
+                        ></button>
+
+                    </div>
+
+
+                    <div class="config-row">
+
+                        <span>
+                            Memory
+                        </span>
+
+                        <button
+                            class="toggle active"
+                            onclick="toggleControl(this)"
+                        ></button>
+
+                    </div>
+
+
+                    <div class="config-row">
+
+                        <span>
+                            Human Approval
+                        </span>
+
+                        <button
+                            class="toggle active"
+                            onclick="toggleControl(this)"
+                        ></button>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ==========================================
+             PERMISSIONS
+             ========================================== -->
+
+        <section
+            id="permissions"
+            class="tab-content"
+        >
+
+            <div class="card">
+
+                <div class="card-header">
+
+                    <h2>
+                        Agent Permissions
+                    </h2>
+
+                    <span>
+                        Workspace access
+                    </span>
+
+                </div>
+
+
+                <div class="config-row">
+
+                    <span>
+                        Read workspace data
+                    </span>
+
+                    <button
+                        class="toggle active"
+                        onclick="toggleControl(this)"
+                    ></button>
+
+                </div>
+
+
+                <div class="config-row">
+
+                    <span>
+                        Execute workflows
+                    </span>
+
+                    <button
+                        class="toggle active"
+                        onclick="toggleControl(this)"
+                    ></button>
+
+                </div>
+
+
+                <div class="config-row">
+
+                    <span>
+                        Use external tools
+                    </span>
+
+                    <button
+                        class="toggle active"
+                        onclick="toggleControl(this)"
+                    ></button>
+
+                </div>
+
+
+                <div class="config-row">
+
+                    <span>
+                        Make external API requests
+                    </span>
+
+                    <button
+                        class="toggle"
+                        onclick="toggleControl(this)"
+                    ></button>
+
+                </div>
+
+
+                <div class="config-row">
+
+                    <span>
+                        Publish results automatically
+                    </span>
+
+                    <button
+                        class="toggle"
+                        onclick="toggleControl(this)"
+                    ></button>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+
+<!-- MODAL -->
+
+<div
+    class="modal"
+    id="modal"
+>
+
+    <div class="modal-box">
+
+        <h2 id="modalTitle">
+            Agent
+        </h2>
+
+        <p id="modalText">
+            Agent information.
+        </p>
+
+        <div class="modal-actions">
+
+            <button
+                class="button"
+                onclick="closeModal()"
+            >
+                Cancel
+            </button>
+
+            <button
+                class="button primary-button"
+                onclick="confirmModal()"
+            >
+                Continue
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<div
+    class="toast"
+    id="toast"
+></div>
+
+
+<script>
+
+    let modalAction = null;
+
+
+    /* ==========================================
+       TABS
+       ========================================== */
+
+    function showTab(tabId, button) {
+
+        document
+            .querySelectorAll(".tab-content")
+            .forEach(function(section) {
+
+                section.classList.remove("active");
+
+            });
+
+
+        document
+            .querySelectorAll(".tab")
+            .forEach(function(tab) {
+
+                tab.classList.remove("active");
+
+            });
+
+
+        document
+            .getElementById(tabId)
+            .classList.add("active");
+
+
+        button.classList.add("active");
+    }
+
+
+    /* ==========================================
+       TOAST
+       ========================================== */
+
+    function showToast(message) {
+
+        const toast =
+            document.getElementById("toast");
+
+        toast.textContent = message;
+
+        toast.classList.add("show");
+
+        setTimeout(function() {
+
+            toast.classList.remove("show");
+
+        }, 2200);
+    }
+
+
+    /* ==========================================
+       RUN AGENT
+       ========================================== */
+
+    function runAgent() {
+
+        showToast(
+            "▶ Research Agent execution started..."
+        );
+
+        setTimeout(function() {
+
+            showToast(
+                "✓ Agent execution completed successfully"
+            );
+
+        }, 1800);
+    }
+
+
+    /* ==========================================
+       PAUSE
+       ========================================== */
+
+    function togglePause() {
+
+        const button =
+            document.getElementById("pauseButton");
+
+        const status =
+            document.querySelector(".status");
+
+        const dot =
+            document.querySelector(".status-dot");
+
+
+        if (
+            button.textContent.includes("Pause")
+        ) {
+
+            button.textContent =
+                "▶ Resume";
+
+            status.innerHTML =
+                '<span class="status-dot" style="background:#ffb65f;box-shadow:0 0 10px rgba(255,182,95,.6)"></span> Paused';
+
+            showToast(
+                "Agent paused"
+            );
+
+        } else {
+
+            button.textContent =
+                "⏸ Pause";
+
+            status.innerHTML =
+                '<span class="status-dot"></span> Operational · Active now';
+
+            showToast(
+                "Agent resumed"
+            );
+        }
+    }
+
+
+    /* ==========================================
+       EDIT
+       ========================================== */
+
+    function editAgent() {
+
+        window.location.href =
+            "agent-builder.html";
+    }
+
+
+    /* ==========================================
+       DELETE
+       ========================================== */
+
+    function deleteAgent() {
+
+        openModal(
+            "Delete Research Agent",
+            "This is a frontend demo. The agent would be removed from the workspace after confirmation.",
+            function() {
+
+                showToast(
+                    "Agent deletion simulated"
+                );
+
+            }
+        );
+    }
+
+
+    /* ==========================================
+       MODAL
+       ========================================== */
+
+    function openModal(title, text, action) {
+
+        document.getElementById(
+            "modalTitle"
+        ).textContent = title;
+
+        document.getElementById(
+            "modalText"
+        ).textContent = text;
+
+        modalAction = action;
+
+        document
+            .getElementById("modal")
+            .classList.add("show");
+    }
+
+
+    function closeModal() {
+
+        document
+            .getElementById("modal")
+            .classList.remove("show");
+
+        modalAction = null;
+    }
+
+
+    function confirmModal() {
+
+        if (modalAction) {
+            modalAction();
+        }
+
+        closeModal();
+    }
+
+
+    /* ==========================================
+       TOGGLE CONTROLS
+       ========================================== */
+
+    function toggleControl(button) {
+
+        button.classList.toggle("active");
+
+        showToast(
+            button.classList.contains("active")
+                ? "Permission enabled"
+                : "Permission disabled"
+        );
+    }
+
+
+    /* ==========================================
+       ESC KEY
+       ========================================== */
+
+    document.addEventListener(
+        "keydown",
+        function(event) {
+
+            if (
+                event.key === "Escape"
+            ) {
+                closeModal();
+            }
+
+        }
+    );
+
+
+    /* ==========================================
+       LOAD SELECTED AGENT
+       ========================================== */
+
+    window.addEventListener(
+        "DOMContentLoaded",
+        function() {
+
+            const selected =
+                localStorage.getItem(
+                    "selectedAgent"
+                );
+
+            if (selected) {
+
+                try {
+
+                    const agent =
+                        JSON.parse(selected);
+
+                    if (agent.name) {
+
+                        document
+                            .querySelector(
+                                ".agent-info h1"
+                            )
+                            .textContent =
+                            agent.name;
+
+                    }
+
+                } catch (error) {
+
+                    console.log(
+                        "Selected agent data unavailable."
+                    );
+
+                }
+
+            }
+
+        }
+    );
+
+</script>
+
+</body>
+</html>

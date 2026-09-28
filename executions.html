@@ -1,0 +1,1347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Nexora — Execution History</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+        .execution-page {
+            min-height: 100vh;
+            max-width: 1600px;
+            margin: auto;
+            padding: 32px;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .eyebrow {
+            color: var(--purple-light);
+            font-size: 12px;
+            font-weight: 800;
+            letter-spacing: .08em;
+            margin-bottom: 8px;
+        }
+
+        h1 {
+            margin: 0 0 8px;
+            font-size: 32px;
+        }
+
+        .subtitle {
+            margin: 0;
+            color: var(--muted);
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            border: 1px solid var(--border);
+            background: var(--surface);
+            color: var(--text);
+            padding: 11px 17px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 700;
+            transition: .2s;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            border-color: var(--purple);
+        }
+
+        /* STATS */
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .stat {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            padding: 20px;
+        }
+
+        .stat-label {
+            color: var(--muted);
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .stat-value {
+            font-size: 27px;
+            font-weight: 800;
+            margin-top: 10px;
+        }
+
+        .stat-note {
+            color: var(--muted);
+            font-size: 10px;
+            margin-top: 6px;
+        }
+
+        .green {
+            color: var(--green);
+        }
+
+        .red {
+            color: var(--red);
+        }
+
+        .blue {
+            color: var(--blue);
+        }
+
+        .orange {
+            color: var(--orange);
+        }
+
+        /* FILTER */
+
+        .toolbar {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            align-items: center;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            padding: 16px;
+            border-radius: 18px;
+            margin-bottom: 22px;
+        }
+
+        .search {
+            flex: 1;
+            min-width: 250px;
+            position: relative;
+        }
+
+        .search span {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--muted);
+        }
+
+        .search input,
+        .filter {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 12px 14px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            background: var(--surface-2);
+            color: var(--text);
+            outline: none;
+        }
+
+        .search input {
+            padding-left: 40px;
+        }
+
+        .filter {
+            width: auto;
+            min-width: 150px;
+        }
+
+        /* TABLE */
+
+        .history-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            overflow: hidden;
+        }
+
+        .table-scroll {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            min-width: 1050px;
+            border-collapse: collapse;
+        }
+
+        th {
+            padding: 16px 18px;
+            text-align: left;
+            color: var(--muted);
+            font-size: 10px;
+            letter-spacing: .06em;
+            border-bottom: 1px solid var(--border);
+        }
+
+        td {
+            padding: 18px;
+            border-bottom: 1px solid var(--border);
+            font-size: 13px;
+        }
+
+        tbody tr {
+            cursor: pointer;
+            transition: .2s;
+        }
+
+        tbody tr:hover {
+            background: rgba(139,108,255,.04);
+        }
+
+        tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .execution-id {
+            color: var(--purple-light);
+            font-weight: 800;
+            font-size: 12px;
+        }
+
+        .workflow-name {
+            font-weight: 800;
+            margin-bottom: 4px;
+        }
+
+        .agent {
+            color: var(--muted);
+            font-size: 11px;
+        }
+
+        .duration {
+            color: var(--muted);
+            font-size: 11px;
+        }
+
+        /* STATUS */
+
+        .status {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            padding: 6px 10px;
+            border-radius: 30px;
+            font-size: 10px;
+            font-weight: 800;
+        }
+
+        .dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+        }
+
+        .success {
+            color: var(--green);
+            background: rgba(67,223,160,.1);
+        }
+
+        .success .dot {
+            background: var(--green);
+        }
+
+        .exec-running {
+            color: var(--blue);
+            background: rgba(66,200,255,.1);
+        }
+
+        .exec-running .dot {
+            background: var(--blue);
+            animation: pulse 1.3s infinite;
+        }
+
+        .exec-failed {
+            color: var(--red);
+            background: rgba(255,102,120,.1);
+        }
+
+        .exec-failed .dot {
+            background: var(--red);
+        }
+
+        .exec-waiting {
+            color: var(--orange);
+            background: rgba(255,182,95,.1);
+        }
+
+        .exec-waiting .dot {
+            background: var(--orange);
+        }
+
+        @keyframes pulse {
+            50% {
+                opacity: .35;
+                transform: scale(.65);
+            }
+        }
+
+        /* ACTIONS */
+
+        .actions {
+            display: flex;
+            gap: 6px;
+        }
+
+        .action-btn {
+            border: 1px solid var(--border);
+            background: var(--surface-2);
+            color: var(--text);
+            padding: 7px 10px;
+            border-radius: 7px;
+            cursor: pointer;
+            font-size: 10px;
+            font-weight: 700;
+        }
+
+        .action-btn:hover {
+            border-color: var(--purple);
+        }
+
+        /* TIMELINE */
+
+        .timeline-panel {
+            display: none;
+            margin-top: 22px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 25px;
+        }
+
+        .timeline-header {
+            display: flex;
+            justify-content: space-between;
+            gap: 15px;
+            align-items: flex-start;
+            margin-bottom: 25px;
+        }
+
+        .timeline-header h2 {
+            margin: 0 0 6px;
+            font-size: 21px;
+        }
+
+        .timeline-header p {
+            margin: 0;
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        .close-btn {
+            border: 1px solid var(--border);
+            background: var(--surface-2);
+            color: var(--text);
+            border-radius: 8px;
+            padding: 8px 12px;
+            cursor: pointer;
+        }
+
+        .timeline {
+            position: relative;
+            padding-left: 34px;
+        }
+
+        .timeline::before {
+            content: "";
+            position: absolute;
+            left: 8px;
+            top: 8px;
+            bottom: 8px;
+            width: 1px;
+            background: var(--border-light);
+        }
+
+        .timeline-item {
+            position: relative;
+            padding-bottom: 25px;
+        }
+
+        .timeline-item:last-child {
+            padding-bottom: 0;
+        }
+
+        .timeline-dot {
+            position: absolute;
+            left: -31px;
+            top: 3px;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: var(--surface);
+            border: 3px solid var(--green);
+            z-index: 2;
+        }
+
+        .timeline-dot.processing {
+            border-color: var(--blue);
+        }
+
+        .timeline-dot.waiting {
+            border-color: var(--orange);
+        }
+
+        .timeline-dot.error {
+            border-color: var(--red);
+        }
+
+        .timeline-title {
+            font-weight: 800;
+            font-size: 13px;
+        }
+
+        .timeline-meta {
+            color: var(--muted);
+            font-size: 11px;
+            margin-top: 5px;
+        }
+
+        .timeline-detail {
+            margin-top: 9px;
+            background: var(--surface-2);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 11px;
+            color: var(--muted);
+            font-size: 11px;
+        }
+
+        /* EMPTY */
+
+        .empty {
+            display: none;
+            padding: 60px;
+            text-align: center;
+            color: var(--muted);
+        }
+
+        @media (max-width: 1100px) {
+            .stats {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 700px) {
+            .execution-page {
+                padding: 20px 14px;
+            }
+
+            .page-header {
+                flex-direction: column;
+            }
+
+            .stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .filter {
+                width: 100%;
+            }
+
+            .timeline-panel {
+                padding: 18px;
+            }
+        }
+
+        @media (max-width: 450px) {
+            .stats {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="execution-page">
+
+    <!-- HEADER -->
+
+    <header class="page-header">
+
+        <div>
+            <div class="eyebrow">
+                AGENT OBSERVABILITY
+            </div>
+
+            <h1>Execution History</h1>
+
+            <p class="subtitle">
+                Track every AI agent execution, step and result.
+            </p>
+        </div>
+
+        <div class="header-actions">
+
+            <button class="btn" onclick="refreshExecutions()">
+                ↻ Refresh
+            </button>
+
+        </div>
+
+    </header>
+
+
+    <!-- STATS -->
+
+    <section class="stats">
+
+        <div class="stat">
+            <div class="stat-label">TOTAL EXECUTIONS</div>
+            <div class="stat-value">3,842</div>
+            <div class="stat-note">All time</div>
+        </div>
+
+        <div class="stat">
+            <div class="stat-label">SUCCESSFUL</div>
+            <div class="stat-value green">3,674</div>
+            <div class="stat-note">95.6% success rate</div>
+        </div>
+
+        <div class="stat">
+            <div class="stat-label">RUNNING</div>
+            <div class="stat-value blue">12</div>
+            <div class="stat-note">Currently executing</div>
+        </div>
+
+        <div class="stat">
+            <div class="stat-label">FAILED</div>
+            <div class="stat-value red">86</div>
+            <div class="stat-note">Needs attention</div>
+        </div>
+
+        <div class="stat">
+            <div class="stat-label">AVG DURATION</div>
+            <div class="stat-value orange">3.8s</div>
+            <div class="stat-note">Last 24 hours</div>
+        </div>
+
+    </section>
+
+
+    <!-- FILTER -->
+
+    <section class="toolbar">
+
+        <div class="search">
+
+            <span>⌕</span>
+
+            <input
+                id="executionSearch"
+                type="text"
+                placeholder="Search execution ID, workflow or agent..."
+                oninput="filterExecutions()"
+            >
+
+        </div>
+
+
+        <select
+            class="filter"
+            id="statusFilter"
+            onchange="filterExecutions()"
+        >
+            <option value="all">All Status</option>
+            <option value="success">Successful</option>
+            <option value="running">Running</option>
+            <option value="failed">Failed</option>
+            <option value="waiting">Waiting</option>
+        </select>
+
+
+        <select
+            class="filter"
+            id="typeFilter"
+            onchange="filterExecutions()"
+        >
+            <option value="all">All Types</option>
+            <option value="workflow">Workflow</option>
+            <option value="agent">Agent</option>
+            <option value="automation">Automation</option>
+        </select>
+
+    </section>
+
+
+    <!-- HISTORY -->
+
+    <section class="history-card">
+
+        <div class="table-scroll">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+                        <th>EXECUTION</th>
+                        <th>WORKFLOW / AGENT</th>
+                        <th>STATUS</th>
+                        <th>DURATION</th>
+                        <th>TOKENS</th>
+                        <th>COST</th>
+                        <th>STARTED</th>
+                        <th>ACTION</th>
+                    </tr>
+
+                </thead>
+
+                <tbody id="executionTable">
+
+
+                    <!-- 1 -->
+
+                    <tr
+                        class="execution-row"
+                        data-search="exec-8924 market research research agent"
+                        data-status="success"
+                        data-type="workflow"
+                        onclick="openTimeline('EXEC-8924')"
+                    >
+
+                        <td>
+                            <div class="execution-id">
+                                EXEC-8924
+                            </div>
+                        </td>
+
+                        <td>
+                            <div class="workflow-name">
+                                Market Research
+                            </div>
+                            <div class="agent">
+                                Research Agent
+                            </div>
+                        </td>
+
+                        <td>
+                            <span class="status success">
+                                <span class="dot"></span>
+                                Success
+                            </span>
+                        </td>
+
+                        <td>
+                            <span class="duration">
+                                4.2s
+                            </span>
+                        </td>
+
+                        <td>8,420</td>
+
+                        <td>$0.08</td>
+
+                        <td>
+                            <span class="duration">
+                                2 min ago
+                            </span>
+                        </td>
+
+                        <td>
+                            <div class="actions">
+
+                                <button
+                                    class="action-btn"
+                                    onclick="event.stopPropagation();openTimeline('EXEC-8924')"
+                                >
+                                    View
+                                </button>
+
+                            </div>
+                        </td>
+
+                    </tr>
+
+
+                    <!-- 2 -->
+
+                    <tr
+                        class="execution-row"
+                        data-search="exec-8923 customer support support copilot"
+                        data-status="running"
+                        data-type="agent"
+                        onclick="openTimeline('EXEC-8923')"
+                    >
+
+                        <td>
+                            <div class="execution-id">
+                                EXEC-8923
+                            </div>
+                        </td>
+
+                        <td>
+                            <div class="workflow-name">
+                                Customer Response
+                            </div>
+                            <div class="agent">
+                                Support Copilot
+                            </div>
+                        </td>
+
+                        <td>
+                            <span class="status exec-running">
+                                <span class="dot"></span>
+                                Running
+                            </span>
+                        </td>
+
+                        <td>
+                            <span class="duration">
+                                2.1s
+                            </span>
+                        </td>
+
+                        <td>4,120</td>
+
+                        <td>$0.04</td>
+
+                        <td>
+                            <span class="duration">
+                                4 min ago
+                            </span>
+                        </td>
+
+                        <td>
+                            <div class="actions">
+
+                                <button
+                                    class="action-btn"
+                                    onclick="event.stopPropagation();openTimeline('EXEC-8923')"
+                                >
+                                    View
+                                </button>
+
+                            </div>
+                        </td>
+
+                    </tr>
+
+
+                    <!-- 3 -->
+
+                    <tr
+                        class="execution-row"
+                        data-search="exec-8922 sales report data analyst"
+                        data-status="success"
+                        data-type="agent"
+                        onclick="openTimeline('EXEC-8922')"
+                    >
+
+                        <td>
+                            <div class="execution-id">
+                                EXEC-8922
+                            </div>
+                        </td>
+
+                        <td>
+                            <div class="workflow-name">
+                                Sales Report
+                            </div>
+                            <div class="agent">
+                                Data Analyst
+                            </div>
+                        </td>
+
+                        <td>
+                            <span class="status success">
+                                <span class="dot"></span>
+                                Success
+                            </span>
+                        </td>
+
+                        <td>
+                            <span class="duration">
+                                6.7s
+                            </span>
+                        </td>
+
+                        <td>12,850</td>
+
+                        <td>$0.12</td>
+
+                        <td>
+                            <span class="duration">
+                                8 min ago
+                            </span>
+                        </td>
+
+                        <td>
+                            <div class="actions">
+
+                                <button
+                                    class="action-btn"
+                                    onclick="event.stopPropagation();openTimeline('EXEC-8922')"
+                                >
+                                    View
+                                </button>
+
+                            </div>
+                        </td>
+
+                    </tr>
+
+
+                    <!-- 4 -->
+
+                    <tr
+                        class="execution-row"
+                        data-search="exec-8921 email automation workflow executor"
+                        data-status="failed"
+                        data-type="automation"
+                        onclick="openTimeline('EXEC-8921')"
+                    >
+
+                        <td>
+                            <div class="execution-id">
+                                EXEC-8921
+                            </div>
+                        </td>
+
+                        <td>
+                            <div class="workflow-name">
+                                Email Automation
+                            </div>
+                            <div class="agent">
+                                Workflow Executor
+                            </div>
+                        </td>
+
+                        <td>
+                            <span class="status exec-failed">
+                                <span class="dot"></span>
+                                Failed
+                            </span>
+                        </td>
+
+                        <td>
+                            <span class="duration">
+                                8.9s
+                            </span>
+                        </td>
+
+                        <td>6,720</td>
+
+                        <td>$0.07</td>
+
+                        <td>
+                            <span class="duration">
+                                12 min ago
+                            </span>
+                        </td>
+
+                        <td>
+                            <div class="actions">
+
+                                <button
+                                    class="action-btn"
+                                    onclick="event.stopPropagation();openTimeline('EXEC-8921')"
+                                >
+                                    View
+                                </button>
+
+                                <button
+                                    class="action-btn"
+                                    onclick="event.stopPropagation();retryExecution('EXEC-8921')"
+                                >
+                                    ↻
+                                </button>
+
+                            </div>
+                        </td>
+
+                    </tr>
+
+
+                    <!-- 5 -->
+
+                    <tr
+                        class="execution-row"
+                        data-search="exec-8920 competitor research research agent"
+                        data-status="waiting"
+                        data-type="workflow"
+                        onclick="openTimeline('EXEC-8920')"
+                    >
+
+                        <td>
+                            <div class="execution-id">
+                                EXEC-8920
+                            </div>
+                        </td>
+
+                        <td>
+                            <div class="workflow-name">
+                                Competitor Research
+                            </div>
+                            <div class="agent">
+                                Research Agent
+                            </div>
+                        </td>
+
+                        <td>
+                            <span class="status exec-waiting">
+                                <span class="dot"></span>
+                                Approval
+                            </span>
+                        </td>
+
+                        <td>
+                            <span class="duration">
+                                5.3s
+                            </span>
+                        </td>
+
+                        <td>9,320</td>
+
+                        <td>$0.09</td>
+
+                        <td>
+                            <span class="duration">
+                                18 min ago
+                            </span>
+                        </td>
+
+                        <td>
+                            <div class="actions">
+
+                                <button
+                                    class="action-btn"
+                                    onclick="event.stopPropagation();openTimeline('EXEC-8920')"
+                                >
+                                    View
+                                </button>
+
+                            </div>
+                        </td>
+
+                    </tr>
+
+
+                    <!-- 6 -->
+
+                    <tr
+                        class="execution-row"
+                        data-search="exec-8919 document summary research agent"
+                        data-status="success"
+                        data-type="agent"
+                        onclick="openTimeline('EXEC-8919')"
+                    >
+
+                        <td>
+                            <div class="execution-id">
+                                EXEC-8919
+                            </div>
+                        </td>
+
+                        <td>
+                            <div class="workflow-name">
+                                Document Summary
+                            </div>
+                            <div class="agent">
+                                Research Agent
+                            </div>
+                        </td>
+
+                        <td>
+                            <span class="status success">
+                                <span class="dot"></span>
+                                Success
+                            </span>
+                        </td>
+
+                        <td>
+                            <span class="duration">
+                                2.8s
+                            </span>
+                        </td>
+
+                        <td>5,420</td>
+
+                        <td>$0.05</td>
+
+                        <td>
+                            <span class="duration">
+                                25 min ago
+                            </span>
+                        </td>
+
+                        <td>
+                            <div class="actions">
+
+                                <button
+                                    class="action-btn"
+                                    onclick="event.stopPropagation();openTimeline('EXEC-8919')"
+                                >
+                                    View
+                                </button>
+
+                            </div>
+                        </td>
+
+                    </tr>
+
+
+                </tbody>
+
+            </table>
+
+
+            <div
+                class="empty"
+                id="emptyState"
+            >
+                🔍
+                <br><br>
+                <strong>No executions found</strong>
+                <p>
+                    Try changing your search or filters.
+                </p>
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- TIMELINE -->
+
+    <section
+        class="timeline-panel"
+        id="timelinePanel"
+    >
+
+        <div class="timeline-header">
+
+            <div>
+
+                <h2 id="timelineTitle">
+                    Execution Timeline
+                </h2>
+
+                <p id="timelineSubtitle">
+                    Detailed execution steps
+                </p>
+
+            </div>
+
+            <button
+                class="close-btn"
+                onclick="closeTimeline()"
+            >
+                ✕ Close
+            </button>
+
+        </div>
+
+
+        <div class="timeline">
+
+
+            <div class="timeline-item">
+
+                <span class="timeline-dot"></span>
+
+                <div class="timeline-title">
+                    Workflow Started
+                </div>
+
+                <div class="timeline-meta">
+                    09:42:01 • 120ms
+                </div>
+
+                <div class="timeline-detail">
+                    Execution initialized successfully and workflow configuration loaded.
+                </div>
+
+            </div>
+
+
+            <div class="timeline-item">
+
+                <span class="timeline-dot processing"></span>
+
+                <div class="timeline-title">
+                    Research Agent
+                </div>
+
+                <div class="timeline-meta">
+                    09:42:01 • 1.8s
+                </div>
+
+                <div class="timeline-detail">
+                    Agent analyzed the task and generated the next execution step.
+                </div>
+
+            </div>
+
+
+            <div class="timeline-item">
+
+                <span class="timeline-dot processing"></span>
+
+                <div class="timeline-title">
+                    Web Search Tool
+                </div>
+
+                <div class="timeline-meta">
+                    09:42:03 • 980ms
+                </div>
+
+                <div class="timeline-detail">
+                    Search completed and returned 18 relevant sources.
+                </div>
+
+            </div>
+
+
+            <div class="timeline-item">
+
+                <span class="timeline-dot waiting"></span>
+
+                <div class="timeline-title">
+                    Human Approval
+                </div>
+
+                <div class="timeline-meta">
+                    09:42:04 • Waiting
+                </div>
+
+                <div class="timeline-detail">
+                    This execution requires human approval before continuing.
+                </div>
+
+            </div>
+
+
+            <div class="timeline-item">
+
+                <span class="timeline-dot"></span>
+
+                <div class="timeline-title">
+                    Workflow Completed
+                </div>
+
+                <div class="timeline-meta">
+                    Final step • Completed
+                </div>
+
+                <div class="timeline-detail">
+                    Execution completed and output was stored successfully.
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+</div>
+
+
+<script src="js/script.js"></script>
+
+<script>
+
+    function toast(message) {
+
+        if (typeof nexoraToast === "function") {
+            nexoraToast(message);
+        } else {
+            alert(message);
+        }
+
+    }
+
+
+    function filterExecutions() {
+
+        const search =
+            document
+                .getElementById("executionSearch")
+                .value
+                .toLowerCase();
+
+        const status =
+            document.getElementById("statusFilter").value;
+
+        const type =
+            document.getElementById("typeFilter").value;
+
+        const rows =
+            document.querySelectorAll(".execution-row");
+
+        let visible = 0;
+
+        rows.forEach(row => {
+
+            const rowSearch =
+                row.dataset.search.toLowerCase();
+
+            const rowStatus =
+                row.dataset.status;
+
+            const rowType =
+                row.dataset.type;
+
+            const matchesSearch =
+                rowSearch.includes(search);
+
+            const matchesStatus =
+                status === "all" ||
+                rowStatus === status;
+
+            const matchesType =
+                type === "all" ||
+                rowType === type;
+
+            const show =
+                matchesSearch &&
+                matchesStatus &&
+                matchesType;
+
+            row.style.display =
+                show ? "" : "none";
+
+            if (show) {
+                visible++;
+            }
+
+        });
+
+        document.getElementById("emptyState").style.display =
+            visible === 0 ? "block" : "none";
+
+    }
+
+
+    function openTimeline(id) {
+
+        localStorage.setItem(
+            "selectedExecution",
+            id
+        );
+
+        document.getElementById(
+            "timelineTitle"
+        ).textContent =
+            "Execution Timeline — " + id;
+
+        document.getElementById(
+            "timelineSubtitle"
+        ).textContent =
+            "Detailed execution steps for " + id;
+
+        document.getElementById(
+            "timelinePanel"
+        ).style.display = "block";
+
+        document.getElementById(
+            "timelinePanel"
+        ).scrollIntoView({
+            behavior: "smooth",
+            block: "start"
+        });
+
+    }
+
+
+    function closeTimeline() {
+
+        document.getElementById(
+            "timelinePanel"
+        ).style.display = "none";
+
+    }
+
+
+    function retryExecution(id) {
+
+        toast(
+            "↻ Retrying " + id + "..."
+        );
+
+        setTimeout(() => {
+
+            toast(
+                "✓ " + id + " retry started"
+            );
+
+        }, 700);
+
+    }
+
+
+    function refreshExecutions() {
+
+        toast(
+            "↻ Execution history refreshed"
+        );
+
+        document
+            .querySelectorAll(".execution-row")
+            .forEach(row => {
+
+                row.style.transform =
+                    "scale(.99)";
+
+                setTimeout(() => {
+                    row.style.transform = "";
+                }, 150);
+
+            });
+
+    }
+
+
+    document.addEventListener(
+        "keydown",
+        event => {
+
+            if (
+                event.ctrlKey &&
+                event.key.toLowerCase() === "k"
+            ) {
+
+                event.preventDefault();
+
+                document
+                    .getElementById("executionSearch")
+                    .focus();
+
+            }
+
+            if (
+                event.key === "Escape"
+            ) {
+
+                closeTimeline();
+
+            }
+
+        }
+    );
+
+
+    filterExecutions();
+
+</script>
+
+</body>
+</html>
