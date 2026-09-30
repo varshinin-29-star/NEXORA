@@ -1,0 +1,894 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta name="description" content="Nexora professional pricing plans for modern businesses and teams.">
+    <meta name="keywords" content="Nexora, pricing, SaaS, plans, business">
+    <meta name="author" content="Nexora">
+
+    <title>Nexora — Pricing</title>
+
+    <style>
+        /* =========================
+           RESET
+        ========================= */
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: #070911;
+            color: #f5f7ff;
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        button {
+            font-family: inherit;
+            cursor: pointer;
+        }
+
+        /* =========================
+           NAVBAR
+        ========================= */
+
+        .navbar {
+            width: min(1180px, calc(100% - 40px));
+            height: 78px;
+            margin: auto;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+
+            font-size: 21px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+        }
+
+        .brand-icon {
+            width: 38px;
+            height: 38px;
+            border-radius: 11px;
+
+            display: grid;
+            place-items: center;
+
+            background: linear-gradient(
+                135deg,
+                #8b6cff,
+                #42c8ff
+            );
+
+            box-shadow: 0 8px 25px rgba(88, 92, 255, 0.25);
+        }
+
+        .brand-icon span {
+            width: 15px;
+            height: 15px;
+
+            border: 3px solid white;
+            border-radius: 4px;
+
+            transform: rotate(45deg);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: #969fb1;
+            font-size: 14px;
+            transition: 0.3s ease;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: #ffffff;
+        }
+
+        .nav-button {
+            padding: 11px 18px;
+            border-radius: 10px;
+
+            background: #7358ed;
+            color: white;
+
+            font-size: 14px;
+            font-weight: 700;
+
+            transition: 0.3s ease;
+        }
+
+        .nav-button:hover {
+            background: #866ef5;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(115, 88, 237, 0.3);
+        }
+
+        /* =========================
+           HERO
+        ========================= */
+
+        .hero {
+            text-align: center;
+            padding: 85px 20px 55px;
+        }
+
+        .badge {
+            display: inline-block;
+
+            padding: 8px 14px;
+            border-radius: 999px;
+
+            color: #b7aaff;
+            background: rgba(124, 92, 252, 0.1);
+            border: 1px solid rgba(124, 92, 252, 0.25);
+
+            font-size: 12px;
+            font-weight: 700;
+
+            margin-bottom: 20px;
+        }
+
+        .hero h1 {
+            max-width: 850px;
+            margin: auto;
+
+            font-size: clamp(42px, 6vw, 68px);
+            letter-spacing: -3px;
+            line-height: 1.05;
+        }
+
+        .gradient {
+            background: linear-gradient(
+                90deg,
+                #ffffff,
+                #a9a0ff,
+                #59cfff
+            );
+
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero p {
+            max-width: 650px;
+            margin: 22px auto 0;
+
+            color: #929bad;
+            font-size: 17px;
+        }
+
+        /* =========================
+           PRICING SECTION
+        ========================= */
+
+        .pricing-section {
+            width: min(1180px, calc(100% - 40px));
+            margin: 20px auto 100px;
+        }
+
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 22px;
+            align-items: stretch;
+        }
+
+        /* =========================
+           PRICING CARD
+        ========================= */
+
+        .pricing-card {
+            position: relative;
+
+            padding: 32px;
+
+            background: #0d101a;
+            border: 1px solid #202534;
+            border-radius: 20px;
+
+            display: flex;
+            flex-direction: column;
+
+            transition:
+                transform 0.3s ease,
+                border-color 0.3s ease,
+                box-shadow 0.3s ease;
+        }
+
+        .pricing-card:hover {
+            transform: translateY(-7px);
+            border-color: #494f69;
+            box-shadow: 0 20px 45px rgba(0, 0, 0, 0.3);
+        }
+
+        .pricing-card.featured {
+            border: 1px solid #7358ed;
+            background:
+                linear-gradient(
+                    180deg,
+                    rgba(115, 88, 237, 0.12),
+                    rgba(13, 16, 26, 0.98) 35%
+                );
+
+            box-shadow:
+                0 20px 55px rgba(83, 61, 180, 0.12);
+        }
+
+        .popular {
+            position: absolute;
+            top: -14px;
+            left: 50%;
+
+            transform: translateX(-50%);
+
+            padding: 6px 13px;
+
+            border-radius: 999px;
+
+            background: #7358ed;
+            color: white;
+
+            font-size: 11px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .plan-name {
+            color: #ffffff;
+            font-size: 22px;
+            font-weight: 800;
+
+            margin-bottom: 8px;
+        }
+
+        .plan-description {
+            color: #858da0;
+            font-size: 14px;
+
+            min-height: 45px;
+        }
+
+        .price {
+            display: flex;
+            align-items: baseline;
+            gap: 4px;
+
+            margin: 25px 0;
+        }
+
+        .price strong {
+            font-size: 45px;
+            line-height: 1;
+
+            letter-spacing: -2px;
+        }
+
+        .price span {
+            color: #81899b;
+            font-size: 14px;
+        }
+
+        .card-button {
+            width: 100%;
+
+            padding: 13px 18px;
+
+            border-radius: 10px;
+
+            border: 1px solid #2c3242;
+            background: #151925;
+            color: white;
+
+            font-size: 14px;
+            font-weight: 700;
+
+            transition: 0.3s ease;
+        }
+
+        .card-button:hover {
+            background: #202637;
+            border-color: #4a5269;
+        }
+
+        .featured .card-button {
+            background: #7358ed;
+            border-color: #7358ed;
+        }
+
+        .featured .card-button:hover {
+            background: #866ef5;
+            border-color: #866ef5;
+        }
+
+        /* =========================
+           FEATURES
+        ========================= */
+
+        .features {
+            list-style: none;
+
+            margin-top: 28px;
+            padding-top: 25px;
+
+            border-top: 1px solid #202534;
+
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .features li {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+
+            color: #b6bdcc;
+            font-size: 14px;
+        }
+
+        .check {
+            flex-shrink: 0;
+
+            width: 20px;
+            height: 20px;
+
+            display: grid;
+            place-items: center;
+
+            border-radius: 50%;
+
+            background: rgba(93, 207, 255, 0.1);
+            color: #62d0ff;
+
+            font-size: 12px;
+            font-weight: 800;
+        }
+
+        /* =========================
+           TRUST SECTION
+        ========================= */
+
+        .trust {
+            text-align: center;
+            margin-top: 65px;
+        }
+
+        .trust p {
+            color: #737b8e;
+            font-size: 13px;
+            margin-bottom: 20px;
+        }
+
+        .trust-items {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .trust-item {
+            padding: 9px 15px;
+
+            border: 1px solid #202534;
+            border-radius: 8px;
+
+            background: #0c0f17;
+            color: #858da0;
+
+            font-size: 12px;
+        }
+
+        /* =========================
+           FAQ
+        ========================= */
+
+        .faq {
+            width: min(850px, calc(100% - 40px));
+            margin: 0 auto 100px;
+        }
+
+        .faq h2 {
+            text-align: center;
+
+            font-size: clamp(30px, 4vw, 42px);
+            margin-bottom: 35px;
+        }
+
+        .faq-item {
+            padding: 22px 0;
+
+            border-bottom: 1px solid #202534;
+        }
+
+        .faq-item h3 {
+            color: #ffffff;
+            font-size: 16px;
+            margin-bottom: 8px;
+        }
+
+        .faq-item p {
+            color: #858da0;
+            font-size: 14px;
+        }
+
+        /* =========================
+           FOOTER
+        ========================= */
+
+        footer {
+            border-top: 1px solid #171b27;
+            padding: 30px 20px;
+
+            text-align: center;
+
+            color: #6f7789;
+            font-size: 13px;
+        }
+
+        /* =========================
+           RESPONSIVE
+        ========================= */
+
+        @media (max-width: 900px) {
+
+            .pricing-grid {
+                grid-template-columns: 1fr;
+                max-width: 550px;
+                margin: auto;
+            }
+
+            .pricing-card {
+                padding: 30px;
+            }
+
+            .nav-links {
+                gap: 18px;
+            }
+        }
+
+        @media (max-width: 700px) {
+
+            .navbar {
+                height: auto;
+                padding: 20px 0;
+
+                flex-wrap: wrap;
+                gap: 18px;
+            }
+
+            .nav-links {
+                order: 3;
+                width: 100%;
+
+                justify-content: center;
+            }
+
+            .nav-button {
+                margin-left: auto;
+            }
+
+            .hero {
+                padding-top: 65px;
+            }
+
+            .hero h1 {
+                letter-spacing: -2px;
+            }
+
+            .hero p {
+                font-size: 15px;
+            }
+        }
+
+        @media (max-width: 480px) {
+
+            .navbar {
+                width: min(100% - 28px, 1180px);
+            }
+
+            .nav-links {
+                gap: 14px;
+            }
+
+            .nav-links a {
+                font-size: 12px;
+            }
+
+            .nav-button {
+                padding: 9px 13px;
+                font-size: 12px;
+            }
+
+            .hero {
+                padding: 55px 16px 45px;
+            }
+
+            .hero h1 {
+                font-size: 42px;
+            }
+
+            .pricing-section {
+                width: min(100% - 28px, 1180px);
+            }
+
+            .pricing-card {
+                padding: 25px;
+            }
+
+            .price strong {
+                font-size: 40px;
+            }
+
+            .faq {
+                width: min(100% - 28px, 850px);
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- =========================
+         NAVBAR
+    ========================== -->
+
+    <header>
+        <nav class="navbar">
+
+            <a href="#" class="brand" aria-label="Nexora Home">
+                <div class="brand-icon">
+                    <span></span>
+                </div>
+
+                <span>Nexora</span>
+            </a>
+
+            <div class="nav-links">
+                <a href="#pricing" class="active">Pricing</a>
+                <a href="#features">Features</a>
+                <a href="#faq">FAQ</a>
+            </div>
+
+            <a href="#pricing" class="nav-button">
+                Get Started
+            </a>
+
+        </nav>
+    </header>
+
+
+    <!-- =========================
+         HERO
+    ========================== -->
+
+    <main>
+
+        <section class="hero">
+
+            <span class="badge">
+                SIMPLE • TRANSPARENT • POWERFUL
+            </span>
+
+            <h1>
+                Plans that grow
+                <span class="gradient">with you.</span>
+            </h1>
+
+            <p>
+                Choose the plan that fits your needs today.
+                Upgrade whenever your business grows.
+            </p>
+
+        </section>
+
+
+        <!-- =========================
+             PRICING
+        ========================== -->
+
+        <section class="pricing-section" id="pricing">
+
+            <div class="pricing-grid">
+
+                <!-- STARTER -->
+
+                <article class="pricing-card">
+
+                    <h2 class="plan-name">
+                        Starter
+                    </h2>
+
+                    <p class="plan-description">
+                        Everything you need to get started
+                        with your first project.
+                    </p>
+
+                    <div class="price">
+                        <strong>$0</strong>
+                        <span>/month</span>
+                    </div>
+
+                    <a href="#" class="card-button">
+                        Get Started
+                    </a>
+
+                    <ul class="features">
+
+                        <li>
+                            <span class="check">✓</span>
+                            Up to 3 projects
+                        </li>
+
+                        <li>
+                            <span class="check">✓</span>
+                            Basic analytics
+                        </li>
+
+                        <li>
+                            <span class="check">✓</span>
+                            1 GB storage
+                        </li>
+
+                        <li>
+                            <span class="check">✓</span>
+                            Community support
+                        </li>
+
+                        <li>
+                            <span class="check">✓</span>
+                            Unlimited collaborators
+                        </li>
+
+                    </ul>
+
+                </article>
+
+
+                <!-- PROFESSIONAL -->
+
+                <article class="pricing-card featured">
+
+                    <span class="popular">
+                        Most Popular
+                    </span>
+
+                    <h2 class="plan-name">
+                        Professional
+                    </h2>
+
+                    <p class="plan-description">
+                        Advanced tools for growing teams
+                        and professional projects.
+                    </p>
+
+                    <div class="price">
+                        <strong>$29</strong>
+                        <span>/month</span>
+                    </div>
+
+                    <a href="#" class="card-button">
+                        Start Free Trial
+                    </a>
+
+                    <ul class="features">
+
+                        <li>
+                            <span class="check">✓</span>
+                            Unlimited projects
+                        </li>
+
+                        <li>
+                            <span class="check">✓</span>
+                            Advanced analytics
+                        </li>
+
+                        <li>
+                            <span class="check">✓</span>
+                            50 GB storage
+                        </li>
+
+                        <li>
+                            <span class="check">✓</span>
+                            Priority support
+                        </li>
+
+                        <li>
+                            <span class="check">✓</span>
+                            Team collaboration
+                        </li>
+
+                    </ul>
+
+                </article>
+
+
+                <!-- ENTERPRISE -->
+
+                <article class="pricing-card">
+
+                    <h2 class="plan-name">
+                        Enterprise
+                    </h2>
+
+                    <p class="plan-description">
+                        Powerful solutions built for
+                        large organizations.
+                    </p>
+
+                    <div class="price">
+                        <strong>$99</strong>
+                        <span>/month</span>
+                    </div>
+
+                    <a href="#" class="card-button">
+                        Contact Sales
+                    </a>
+
+                    <ul class="features">
+
+                        <li>
+                            <span class="check">✓</span>
+                            Unlimited everything
+                        </li>
+
+                        <li>
+                            <span class="check">✓</span>
+                            Enterprise analytics
+                        </li>
+
+                        <li>
+                            <span class="check">✓</span>
+                            500 GB storage
+                        </li>
+
+                        <li>
+                            <span class="check">✓</span>
+                            24/7 premium support
+                        </li>
+
+                        <li>
+                            <span class="check">✓</span>
+                            Dedicated account manager
+                        </li>
+
+                    </ul>
+
+                </article>
+
+            </div>
+
+
+            <!-- =========================
+                 TRUST
+            ========================== -->
+
+            <div class="trust" id="features">
+
+                <p>
+                    Trusted by modern teams and growing businesses
+                </p>
+
+                <div class="trust-items">
+
+                    <span class="trust-item">
+                        Secure Payments
+                    </span>
+
+                    <span class="trust-item">
+                        99.9% Uptime
+                    </span>
+
+                    <span class="trust-item">
+                        24/7 Support
+                    </span>
+
+                    <span class="trust-item">
+                        Cancel Anytime
+                    </span>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =========================
+             FAQ
+        ========================== -->
+
+        <section class="faq" id="faq">
+
+            <h2>
+                Frequently Asked Questions
+            </h2>
+
+            <div class="faq-item">
+
+                <h3>
+                    Can I change my plan later?
+                </h3>
+
+                <p>
+                    Yes. You can upgrade or downgrade your
+                    plan whenever you need.
+                </p>
+
+            </div>
+
+            <div class="faq-item">
+
+                <h3>
+                    Is there a free trial?
+                </h3>
+
+                <p>
+                    Yes. The Professional plan includes
+                    a free trial before you are charged.
+                </p>
+
+            </div>
+
+            <div class="faq-item">
+
+                <h3>
+                    Can I cancel anytime?
+                </h3>
+
+                <p>
+                    Yes. You can cancel your subscription
+                    at any time without a long-term commitment.
+                </p>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <!-- =========================
+         FOOTER
+    ========================== -->
+
+    <footer>
+
+        <p>
+            © 2026 Nexora. All rights reserved.
+        </p>
+
+    </footer>
+
+</body>
+</html>
+```
