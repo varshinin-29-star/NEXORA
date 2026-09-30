@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NEXORA - Onboarding</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f7fb;
+            color: #172033;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: auto;
+            padding: 30px 20px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 35px;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: bold;
+            color: #4f46e5;
+        }
+
+        .skip {
+            color: #667085;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .progress {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 45px;
+        }
+
+        .progress span {
+            height: 6px;
+            flex: 1;
+            background: #dfe3ec;
+            border-radius: 10px;
+        }
+
+        .progress span.active {
+            background: #4f46e5;
+        }
+
+        .content {
+            background: white;
+            border-radius: 20px;
+            padding: 50px;
+            box-shadow: 0 10px 35px rgba(0, 0, 0, 0.08);
+            text-align: center;
+        }
+
+        .icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 25px;
+            border-radius: 20px;
+            background: #eef0ff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 38px;
+        }
+
+        h1 {
+            font-size: 38px;
+            margin-bottom: 15px;
+        }
+
+        .subtitle {
+            max-width: 650px;
+            margin: 0 auto 40px;
+            color: #667085;
+            line-height: 1.6;
+            font-size: 17px;
+        }
+
+        .options {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .option {
+            border: 2px solid #e4e7ec;
+            border-radius: 15px;
+            padding: 25px;
+            cursor: pointer;
+            transition: 0.2s;
+            text-align: left;
+        }
+
+        .option:hover {
+            border-color: #4f46e5;
+            transform: translateY(-3px);
+        }
+
+        .option.selected {
+            border-color: #4f46e5;
+            background: #f4f3ff;
+        }
+
+        .option-icon {
+            font-size: 28px;
+            margin-bottom: 15px;
+        }
+        
