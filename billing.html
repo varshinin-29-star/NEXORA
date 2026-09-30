@@ -1,0 +1,666 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Nexora — Billing</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #070911;
+            color: #f5f7ff;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .container {
+            width: min(1100px, calc(100% - 30px));
+            margin: auto;
+        }
+
+        /* NAVBAR */
+
+        nav {
+            height: 75px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid rgba(255,255,255,.08);
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .logo span {
+            color: #8b6cff;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 25px;
+            color: #9da5b5;
+            font-size: 14px;
+        }
+
+        .nav-links a:hover {
+            color: white;
+        }
+
+        .nav-btn {
+            background: #7c5cfc;
+            padding: 10px 17px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        /* HEADER */
+
+        .page-header {
+            text-align: center;
+            padding: 60px 20px 40px;
+        }
+
+        .page-header h1 {
+            font-size: clamp(35px, 5vw, 55px);
+            margin-bottom: 15px;
+        }
+
+        .page-header p {
+            color: #858fa2;
+            max-width: 600px;
+            margin: auto;
+            line-height: 1.7;
+        }
+
+        /* BILLING GRID */
+
+        .billing-grid {
+            display: grid;
+            grid-template-columns: 1.2fr .8fr;
+            gap: 20px;
+            padding-bottom: 50px;
+        }
+
+        .card {
+            background: #0d101b;
+            border: 1px solid rgba(255,255,255,.08);
+            border-radius: 16px;
+            padding: 30px;
+        }
+
+        .card h2 {
+            font-size: 22px;
+            margin-bottom: 8px;
+        }
+
+        .card-subtitle {
+            color: #858fa2;
+            font-size: 14px;
+            margin-bottom: 25px;
+        }
+
+        /* PLAN */
+
+        .plan-box {
+            background: #121626;
+            border: 1px solid rgba(124,92,252,.35);
+            border-radius: 12px;
+            padding: 22px;
+            margin-bottom: 25px;
+        }
+
+        .plan-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .plan-name {
+            font-size: 19px;
+            font-weight: bold;
+        }
+
+        .badge {
+            background: rgba(124,92,252,.15);
+            color: #a995ff;
+            padding: 6px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+        }
+
+        .price {
+            font-size: 36px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .price span {
+            color: #858fa2;
+            font-size: 14px;
+            font-weight: normal;
+        }
+
+        .billing-date {
+            color: #858fa2;
+            font-size: 13px;
+        }
+
+        /* FEATURES */
+
+        .features {
+            list-style: none;
+            margin-top: 20px;
+        }
+
+        .features li {
+            padding: 10px 0;
+            color: #c5cad7;
+            font-size: 14px;
+            border-bottom: 1px solid rgba(255,255,255,.05);
+        }
+
+        .features li:last-child {
+            border-bottom: none;
+        }
+
+        .features li::before {
+            content: "✓";
+            color: #8b6cff;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        /* BUTTONS */
+
+        .btn {
+            display: inline-block;
+            padding: 12px 18px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 14px;
+            margin-top: 20px;
+        }
+
+        .primary-btn {
+            background: #7c5cfc;
+            color: white;
+        }
+
+        .primary-btn:hover {
+            background: #6b4bea;
+        }
+
+        .secondary-btn {
+            background: #171b2a;
+            color: #d9dced;
+            border: 1px solid rgba(255,255,255,.1);
+            margin-left: 8px;
+        }
+
+        .secondary-btn:hover {
+            background: #202538;
+        }
+
+        /* PAYMENT */
+
+        .payment-method {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #121626;
+            padding: 17px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+
+        .payment-left {
+            display: flex;
+            align-items: center;
+            gap: 13px;
+        }
+
+        .payment-icon {
+            width: 42px;
+            height: 42px;
+            background: #1c2133;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .payment-name {
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .payment-number {
+            color: #858fa2;
+            font-size: 12px;
+            margin-top: 4px;
+        }
+
+        .default {
+            color: #8f7cff;
+            font-size: 11px;
+        }
+
+        /* BILLING SUMMARY */
+
+        .summary {
+            margin-top: 25px;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            color: #aeb5c6;
+            font-size: 14px;
+        }
+
+        .summary-row.total {
+            border-top: 1px solid rgba(255,255,255,.1);
+            margin-top: 10px;
+            padding-top: 18px;
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        /* INVOICES */
+
+        .invoice-section {
+            padding-bottom: 60px;
+        }
+
+        .invoice-section h2 {
+            margin-bottom: 20px;
+        }
+
+        .invoice {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr auto;
+            align-items: center;
+            gap: 20px;
+            background: #0d101b;
+            border: 1px solid rgba(255,255,255,.08);
+            padding: 18px 22px;
+            border-radius: 12px;
+            margin-bottom: 12px;
+        }
+
+        .invoice-title {
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .invoice-date,
+        .invoice-amount {
+            color: #858fa2;
+            font-size: 13px;
+        }
+
+        .paid {
+            color: #55d99a;
+            font-size: 12px;
+            background: rgba(85,217,154,.1);
+            padding: 6px 10px;
+            border-radius: 20px;
+            display: inline-block;
+        }
+
+        .download-btn {
+            color: #a995ff;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .download-btn:hover {
+            color: white;
+        }
+
+        /* FOOTER */
+
+        footer {
+            border-top: 1px solid rgba(255,255,255,.08);
+            padding: 25px 0;
+            color: #697286;
+            font-size: 13px;
+            text-align: center;
+        }
+
+        /* RESPONSIVE */
+
+        @media (max-width: 800px) {
+
+            .nav-links {
+                display: none;
+            }
+
+            .billing-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .invoice {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media (max-width: 500px) {
+
+            .container {
+                width: min(100% - 20px, 1100px);
+            }
+
+            .page-header {
+                padding: 45px 10px 30px;
+            }
+
+            .card {
+                padding: 20px;
+            }
+
+            .invoice {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+
+            .secondary-btn {
+                margin-left: 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+
+    <div class="container">
+        <nav>
+            <div class="logo">
+                Nex<span>ora</span>
+            </div>
+
+            <div class="nav-links">
+                <a href="#">Home</a>
+                <a href="#">Features</a>
+                <a href="#">Pricing</a>
+                <a href="#">Contact</a>
+            </div>
+
+            <a href="#" class="nav-btn">Get Started</a>
+        </nav>
+    </div>
+
+
+    <!-- PAGE HEADER -->
+
+    <header class="page-header">
+        <h1>Billing & Subscription</h1>
+
+        <p>
+            Manage your Nexora subscription, payment methods,
+            invoices and billing information from one place.
+        </p>
+    </header>
+
+
+    <!-- BILLING CONTENT -->
+
+    <main class="container">
+
+        <section class="billing-grid">
+
+            <!-- CURRENT PLAN -->
+
+            <div class="card">
+
+                <h2>Your Plan</h2>
+
+                <p class="card-subtitle">
+                    Manage your current Nexora subscription.
+                </p>
+
+                <div class="plan-box">
+
+                    <div class="plan-top">
+                        <div class="plan-name">
+                            Nexora Pro
+                        </div>
+
+                        <div class="badge">
+                            ACTIVE
+                        </div>
+                    </div>
+
+                    <div class="price">
+                        $29
+                        <span>/ month</span>
+                    </div>
+
+                    <div class="billing-date">
+                        Next billing date: October 30, 2026
+                    </div>
+
+                    <ul class="features">
+                        <li>Unlimited projects</li>
+                        <li>Advanced analytics</li>
+                        <li>Priority customer support</li>
+                        <li>Team collaboration</li>
+                        <li>Advanced security controls</li>
+                    </ul>
+
+                    <button class="btn primary-btn">
+                        Manage Plan
+                    </button>
+
+                    <button class="btn secondary-btn">
+                        Cancel Plan
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- PAYMENT -->
+
+            <div class="card">
+
+                <h2>Payment Method</h2>
+
+                <p class="card-subtitle">
+                    Your default payment method.
+                </p>
+
+                <div class="payment-method">
+
+                    <div class="payment-left">
+
+                        <div class="payment-icon">
+                            💳
+                        </div>
+
+                        <div>
+                            <div class="payment-name">
+                                Visa ending in 4242
+                            </div>
+
+                            <div class="payment-number">
+                                Expires 12/28
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <span class="default">
+                        Default
+                    </span>
+
+                </div>
+
+                <button class="btn primary-btn">
+                    Update Payment
+                </button>
+
+
+                <!-- SUMMARY -->
+
+                <div class="summary">
+
+                    <div class="summary-row">
+                        <span>Pro Plan</span>
+                        <span>$29.00</span>
+                    </div>
+
+                    <div class="summary-row">
+                        <span>Tax</span>
+                        <span>$2.90</span>
+                    </div>
+
+                    <div class="summary-row">
+                        <span>Discount</span>
+                        <span>-$0.00</span>
+                    </div>
+
+                    <div class="summary-row total">
+                        <span>Total</span>
+                        <span>$31.90</span>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- INVOICE SECTION -->
+
+        <section class="invoice-section">
+
+            <h2>Billing History</h2>
+
+            <div class="invoice">
+
+                <div>
+                    <div class="invoice-title">
+                        Nexora Pro
+                    </div>
+                </div>
+
+                <div class="invoice-date">
+                    September 30, 2026
+                </div>
+
+                <div class="invoice-amount">
+                    $31.90
+                </div>
+
+                <div>
+                    <span class="paid">
+                        Paid
+                    </span>
+                </div>
+
+                <a href="#" class="download-btn">
+                    Download
+                </a>
+
+            </div>
+
+
+            <div class="invoice">
+
+                <div>
+                    <div class="invoice-title">
+                        Nexora Pro
+                    </div>
+                </div>
+
+                <div class="invoice-date">
+                    August 30, 2026
+                </div>
+
+                <div class="invoice-amount">
+                    $31.90
+                </div>
+
+                <div>
+                    <span class="paid">
+                        Paid
+                    </span>
+                </div>
+
+                <a href="#" class="download-btn">
+                    Download
+                </a>
+
+            </div>
+
+
+            <div class="invoice">
+
+                <div>
+                    <div class="invoice-title">
+                        Nexora Pro
+                    </div>
+                </div>
+
+                <div class="invoice-date">
+                    July 30, 2026
+                </div>
+
+                <div class="invoice-amount">
+                    $31.90
+                </div>
+
+                <div>
+                    <span class="paid">
+                        Paid
+                    </span>
+                </div>
+
+                <a href="#" class="download-btn">
+                    Download
+                </a>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <!-- FOOTER -->
+
+    <footer>
+        <div class="container">
+            © 2026 Nexora. All rights reserved.
+        </div>
+    </footer>
+
+</body>
+</html>
+
