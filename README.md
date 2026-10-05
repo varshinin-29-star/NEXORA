@@ -27,4 +27,5 @@ NEXORA/
 ├── README.md
 └── ...
 
-<img width="1536" height="1024" alt="WhatsApp Image 2026-09-30 at 1 36 28 PM" src="https://github.com/user-attachments/assets/21f31af7-bf73-46d2-b1ed-2cbbf8ce9ba7" />
+<img width="1536" height="1024" alt="WhatsApp Image 2026-10-05 at 11 25 44 AM" src="https://github.com/user-attachments/assets/84cc945f-1c50-47a3-be9d-1f85cd24ac53" />
+
