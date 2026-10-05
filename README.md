@@ -27,6 +27,7 @@ NEXORA/
 ├── README.md
 └── ...
 
-![Uploading WhatsApp Image 2026-10-05 at 11.26.16 PM.jpeg…]()
+<img width="1536" height="1024" alt="WhatsApp Image 2026-10-05 at 11 26 16 PM" src="https://github.com/user-attachments/assets/ac0d0774-fa25-43ec-a27f-0e98a24d676e" />
+
 
 
